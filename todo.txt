@@ -1,0 +1,9 @@
+scrolling window
+game not working properly
+handle all messages, including win, lose
+handle invalid move, use Aarons text
+turn off debug
+hide cursor until you get the create message
+browser testing
+install burn in
+
