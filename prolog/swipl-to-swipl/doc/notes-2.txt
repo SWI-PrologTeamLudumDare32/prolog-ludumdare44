@@ -1,0 +1,267 @@
+2019-04-24 15:08:42 <dmiles> aindilis: okm here is an update
+2019-04-24 15:10:02 <dmiles> i decompiled and am using the opencyc cyc.jar
+      file but its missing quite a bit of functinally 
+2019-04-24 15:10:20 <dmiles> the real issue is we what to use OpenCYC's
+      cfasls
+2019-04-24 15:11:18 <dmiles> the real issue is we want to use OpenCYC's
+      cfasls .. so what this really means is that i need to make Rcyc's
+      cyc.jar file backwards compatible to the Opencyc cfasls
+2019-04-24 15:12:25 <dmiles> to make that happen is i have been slowing
+      reverse engineering opencyc's cfasl system to make sur ei understand it
+      wnough to make rcyc do it
+2019-04-24 15:14:07 <dmiles> it not the format btw that is complex.. it is the
+      KB loading sequence
+2019-04-24 15:18:12 <dmiles> good news though Opencyc data is much better than
+      RCyc's data for E2C
+2019-04-24 15:18:56 <dmiles> very surprised as to how much extra content
+      OpenCYC has on that front
+2019-04-24 15:23:56 *** Prokhor (~user@46.22.18.136) has quit: Ping timeout:
+      258 seconds
+2019-04-24 15:51:57 <aindilis> wonderful
+2019-04-24 15:52:19 <aindilis> I am mainly concerned with having a
+      redistributable code that we can use to stir up interest in the approach
+2019-04-24 15:52:27 <aindilis> so that the extra APIs and everything get
+      written
+2019-04-24 15:53:34 <dmiles> yeah that makes sense
+2019-04-24 15:53:58 <aindilis> so we're doing ludum dare soon
+2019-04-24 15:54:32 <aindilis> and we're trying to integrate
+      AdventureInProlog/LD41/LarKC_CL/OpenCyc
+2019-04-24 15:55:00 <aindilis> anniepoo has indicated to use http calls
+      between Prolog processes to query LarKC_CL so that we can host LarKC_CL
+      since the setup is nontrivial
+2019-04-24 15:55:28 <aindilis> LD41/Prolog <-> LarKC_CL/Prolog
+2019-04-24 15:55:39 <aindilis> btw I didn't see cl_eval/2.
+2019-04-24 15:55:48 <aindilis> I mean it worked for [+,1,1], but not for
+2019-04-24 15:55:57 <aindilis> '(find-constant "isa")'
+2019-04-24 15:56:35 <aindilis> LD41 is anniepoo's code from previous Ludum
+      Dare
+2019-04-24 15:56:42 <aindilis> *a previous
+2019-04-24 15:56:47 <dmiles> i fixed the issue with '(find-constant "isa")'
+2019-04-24 15:56:50 <aindilis> nice
+2019-04-24 15:56:59 <aindilis> do I need to rebuild or just git pull?
+2019-04-24 15:57:45 * dmiles checking to see when the fix was put in
+2019-04-24 15:58:54 <dmiles> ok i havent pushed it sorry
+2019-04-24 15:58:59 <aindilis> np
+2019-04-24 15:59:45 <dmiles> ok its in now
+2019-04-24 15:59:55 <aindilis> do I rebuild or just pull?
+2019-04-24 16:00:13 <dmiles> pull and run ant at least once
+2019-04-24 16:00:26 <dmiles> so for exmaple..
+2019-04-24 16:00:28 <dmiles> cd
+      /mnt/gggg/opt/CYC_JRTL_with_CommonLisp/platform/
+2019-04-24 16:00:31 <dmiles> git pull
+2019-04-24 16:00:32 <dmiles> ant
+2019-04-24 16:00:41 <dmiles> then rerun
+2019-04-24 16:01:24 <dmiles> though i am going to in about 6 hours make a
+      major push that for sure fixex evcerything
+2019-04-24 16:01:42 <dmiles> everything else that is borken that i am not
+      telling you about
+2019-04-24 16:02:07 <dmiles> like for example cyc0query kept complaining about
+      a malformed argument list
+2019-04-24 16:02:18 <dmiles> i just fixed that ab out an hour ago
+2019-04-24 16:02:21 <aindilis> awesome, this is really cool that maybe it will
+      be available in time for LD44
+2019-04-24 16:02:23 <aindilis> nice!
+2019-04-24 16:02:52 <aindilis> I am a bit tired but am going to work on LD44
+      stuff today
+2019-04-24 16:03:50 <dmiles> i have to leave for an appointment in 2 hours
+      .. i dont think this new commit will be done in time.. so i am sayuign 6
+      hours due to i'll at least be back and hoppefull finished
+2019-04-24 16:04:06 <aindilis> cool, thank you, anything I can do to help?
+2019-04-24 16:04:37 <dmiles> oh about > anniepoo has indicated to use http
+      calls between Prolog processes to query LarKC_CL so that we can host
+      LarKC_CL since the setup is nontrivial
+2019-04-24 16:04:55 <dmiles> really there isnt a prolog<->prolog call lbirary
+2019-04-24 16:05:17 <dmiles> but i have often wished there was
+2019-04-24 16:05:35 <aindilis> k well she was rather adamant about it, I plan
+      to rework it when we're finished to *also* load directly from LarKC_CL
+2019-04-24 16:06:07 <dmiles> it is possible to make a local SWI-pro,og speack
+      to the system using a networks SubL API
+2019-04-24 16:06:38 <dmiles> it is possible to make a local SWI-prolog speack
+      to opencyc using a network SubL API
+2019-04-24 16:07:08 <aindilis> yeah, I want larkc_cl access from Prolog though
+2019-04-24 16:07:09 <dmiles> but be extra work making it stop at the remote
+      SWI
+2019-04-24 16:07:56 <dmiles> larkc_cl access from Prolog over the network subl
+      api
+2019-04-24 16:08:20 <aindilis> ah, duh, srry told u I'm tired ;P
+2019-04-24 16:08:25 <dmiles> (jsut there is no prolog runnng @ the remote
+      larkc_server.. be noi reaon to) 
+2019-04-24 16:09:15 <dmiles> it just loses  cyc calling prolog ,, and makes
+      1000s a call a second too unreasonable
+2019-04-24 16:09:29 <dmiles> but the Lundum Dare doesnt sound to need it
+2019-04-24 16:09:35 <aindilis> well I really want that stuff eventually
+2019-04-24 16:09:48 <dmiles> > it just loses  cyc calling prolog  - thus loses
+      E2C etc
+2019-04-24 16:09:51 <aindilis> if anniepoo rigs a swipl <-> swipl caller
+2019-04-24 16:10:21 <dmiles> yeah a swiplM->swipl should be nice
+2019-04-24 16:10:37 <dmiles>  if anniepoo rigs a swipl <-> swipl caller.. then
+      all of awesome
+2019-04-24 16:11:07 <dmiles> then all is awesome
+2019-04-24 16:11:29 <dmiles> i could rig it to but take at least a days
+      work.. and too mnay other things to do
+2019-04-24 16:11:40 <aindilis> he says it's just a pengine, right?
+2019-04-24 16:11:44 <aindilis> *she
+2019-04-24 16:11:46 <aindilis> typo
+2019-04-24 16:12:22 <dmiles> well the pengine server works great.. the problem
+      is not much excersize using pengine-client-for prolog
+2019-04-24 16:12:37 <aindilis> what do you men?
+2019-04-24 16:12:41 <dmiles> not really been excersized
+2019-04-24 16:12:44 <aindilis> client does pengine_rpc_call(URI,
+      thing_im_calling(somearg))
+2019-04-24 16:13:04 <dmiles> yeah.. see that should work
+2019-04-24 16:13:08 <aindilis> kk cool
+2019-04-24 16:13:44 <dmiles> actualyto i suppose if all code is kept server
+      cied it wouldnt be a hassle. .the hassel comes when it comes to syncing
+      the server with the coide you need
+2019-04-24 16:14:30 <dmiles>  pengine_rpc_call(URI, assert(code_i_want:-
+      from_local_files ))
+2019-04-24 16:14:43 <aindilis> ah interesting
+2019-04-24 16:14:49 <aindilis> reloading it?
+2019-04-24 16:14:54 <dmiles> right
+2019-04-24 16:14:54 <aindilis> maybe make?
+2019-04-24 16:15:03 <dmiles> right as well 
+2019-04-24 16:15:05 <aindilis> kk
+2019-04-24 16:15:20 <dmiles> also pengines permisions often set up to make
+      that not work
+2019-04-24 16:15:22 <aindilis> alright, I'm going to integrate what we've got
+      now using all this
+2019-04-24 16:15:33 <aindilis> 2019-04-24 16:13:21 <anniepoo> server has to
+      start http server in normal
+2019-04-24 16:15:33 <aindilis>       fashion, load library(pengines), and
+      import ting_im_calling/1 into the
+2019-04-24 16:15:33 <aindilis>       sandbox
+2019-04-24 16:15:33 <aindilis> 
+2019-04-24 16:15:48 <aindilis> 2019-04-24 16:12:36 <anniepoo> client does
+      pengine_rpc_call(URI,
+2019-04-24 16:15:48 <aindilis>       thing_im_calling(somearg))
+2019-04-24 16:15:48 <aindilis> 
+2019-04-24 16:16:08 <dmiles> yeah anniepoo is prettey much explaining it
+      correctly rthere
+2019-04-24 16:16:09 <aindilis> 2019-04-24 16:14:07 <anniepoo> if you're only
+      doing 2K queries a second, the
+2019-04-24 16:16:09 <aindilis>       overhead in that is trivial
+2019-04-24 16:16:09 <aindilis> 
+2019-04-24 16:16:38 <aindilis> okay well I'll ask if I have any more
+      questions, I'm going to link them up in a few here
+2019-04-24 16:16:43 <dmiles> "import ting_im_calling/1  into the sandbox"
+2019-04-24 16:16:50 <aindilis> sandbox = ?
+2019-04-24 16:17:06 <dmiles> actualyl kind of nice she doent think any of that
+      is unreasonble
+2019-04-24 16:17:08 <aindilis> idk what sandbox means
+2019-04-24 16:17:38 <dmiles> sanbox is that pengines runs in a metainterpretor
+      that stops ce3rtain possibly mallisciaous code runing
+2019-04-24 16:17:48 <dmiles> it means call/1 is often illegal
+2019-04-24 16:17:55 <aindilis> ah kk
+2019-04-24 16:18:08 <aindilis> ty
+2019-04-24 16:18:12 <dmiles> ?- X = true, call(X)
+2019-04-24 16:18:13 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:18:13 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:18:13 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:18:13 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:18:13 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:18:13 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:18:14 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:18:15 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:18:15 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:18:15 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:18:16 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:18:16 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:18:17 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:18:33 <dmiles> yesbot runs all things in sandbox
+2019-04-24 16:18:47 <dmiles> ?- call(true)
+2019-04-24 16:18:47 <yesbot> yes.
+2019-04-24 16:19:04 <dmiles> ?- call(call,true)
+2019-04-24 16:19:04 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:19:04 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:19:04 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:19:04 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:19:04 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:19:05 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:19:05 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:19:06 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:19:06 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:19:06 <aindilis> ah cool
+2019-04-24 16:19:07 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:19:07 <yesbot> Arguments are not sufficiently instantiated
+2019-04-24 16:19:31 <dmiles> (that example there was where the sandox wqs
+      borked)
+2019-04-24 16:19:39 <dmiles> and JanW needs to fix it
+2019-04-24 16:19:45 <aindilis> ah
+2019-04-24 16:20:03 <aindilis> alright, I didn't get much sleep last night, so
+      I'm going to plod along trying to integrate ld44 <-> larkc_cl
+2019-04-24 16:20:22 <dmiles> but i and anniepoo are so used to it being broken
+      we've learned leanred to bypass it :)
+2019-04-24 16:20:26 <aindilis> hehe
+2019-04-24 16:20:46 <dmiles> burt we still say sandbox to make sure everyone
+      knows that is supposed to be where it'd run
+2019-04-24 16:20:50 <dmiles> (on the server)
+2019-04-24 16:21:03 <aindilis> k
+2019-04-24 16:21:03 <aindilis> btw, let me know if you want me to install
+      LogicMOO / PrologMUD / LarKC_CL / OpenCyc on Panoply which I distribute
+      at the Perl Conference
+2019-04-24 16:21:27 <dmiles> i think it will be an option with licience
+      problems
+2019-04-24 16:21:31 <dmiles> without
+2019-04-24 16:21:34 <aindilis> great!
+2019-04-24 16:21:35 * aindilis feels guilty going to the Perl conference and
+      being like Prolog!
+2019-04-24 16:21:39 <aindilis> scared me for a sec
+2019-04-24 16:21:39 <dmiles> after tonoght 
+2019-04-24 16:22:04 <aindilis> that's wonderful
+2019-04-24 16:22:10 <dmiles> i mean it is still tryignj to get larkc to not be
+      totally crippleware when loaded with Cyc jar code
+2019-04-24 16:22:19 <aindilis> yeah
+2019-04-24 16:22:26 <aindilis> *OpenCyc?
+2019-04-24 16:22:44 <dmiles> [04:25] <dmiles>  ?-  cl_eval('(find-constant
+      "isa")',X).
+2019-04-24 16:22:57 <dmiles> [04:25] <PrologMUD> dmiles: %
+      X='CYC:S#10505'(13712,'"isa"')
+2019-04-24 16:22:57 <dmiles> [04:25] <PrologMUD> dmiles: %  det(Yes,1)
+2019-04-24 16:23:18 <dmiles> you'll need to meorize that S#10505==CONSTANT
+2019-04-24 16:23:29 <aindilis> k
+2019-04-24 16:23:32 <aindilis> one little problem
+2019-04-24 16:23:42 <dmiles> there are 10,000 such mini9 meoriozations you
+      need to do
+2019-04-24 16:23:48 <aindilis> baseKB:  ?- cl_eval('(find-constant "isa")',X).
+2019-04-24 16:23:48 <aindilis> #<THREAD "main" {7E3D2EBD}>: Debugger invoked
+      on condition of type UNDEFINED-FUNCTION
+2019-04-24 16:23:48 <aindilis>   The function FIND-CONSTANT is undefined.
+2019-04-24 16:23:54 <aindilis> I ran ant in platform
+2019-04-24 16:24:02 <aindilis> and git pull in platform
+2019-04-24 16:24:09 <dmiles> how do you start it"/
+2019-04-24 16:24:10 <aindilis> should I run it in ROOT
+2019-04-24 16:24:14 <aindilis> ./from_swipl.pl
+2019-04-24 16:24:34 <dmiles> try: swipl -f  ./from_swipl.pl
+2019-04-24 16:24:42 <aindilis> ah yes you told me this before
+2019-04-24 16:25:17 <dmiles> then wait 10 minutes
+2019-04-24 16:25:26 <dmiles> well it has to from another thread start larkc
+2019-04-24 16:25:34 <dmiles> and larkc is the one that added that code
+2019-04-24 16:26:02 <dmiles> spometime arround the time larkc finishing
+      laoding
+2019-04-24 16:26:52 <dmiles> oh that message was from LarkC .. good
+2019-04-24 16:27:08 <aindilis> prolog/logicmoo_nlu.pl:33:                                                                                  
+2019-04-24 16:27:16 <dmiles> try cl_eval('(cyc:find-constant "isa")',X).
+2019-04-24 16:27:19 <aindilis>         source_sink `library(parser_all)' does
+      not exist                                                                                                       
+2019-04-24 16:27:24 <aindilis> k ty
+2019-04-24 16:27:29 <aindilis> it's reloading
+2019-04-24 16:27:37 <dmiles> can may still run it the way you did before
+2019-04-24 16:28:23 <dmiles> some ways of runing it it had some issue of when
+      it starts larkc.. but that wasnt your issue i see by the error now
+2019-04-24 16:29:21 <dmiles> ah yeah i am goign to have to go thru the prolgo
+      and make sur ei can clean up all the prolog/logicmoo_nlu.pl:33:     
+2019-04-24 16:29:25 <dmiles>     source_sink `library(parser_all)' does not
+      exist  
+2019-04-24 16:29:26 <dmiles> etc
+2019-04-24 16:29:59 <aindilis>
+      http://www.cs.utexas.edu/users/tag/ccalc/examples/
+2019-04-24 16:31:37 <aindilis> after init/jrtl-init.lisp:205
+2019-04-24 16:31:37 <aindilis>
+      com.cyc.tool.subl.jrtl.nativeCode.type.exception.SubLException: file
+      "units/7166/special.cfasl" not found
+2019-04-24 16:33:14 <dmiles> hrrm it should be looking in units/7166
+2019-04-24 16:33:20 <dmiles> shouldnt be
+2019-04-24 16:33:45 <dmiles> hrm i thought i updated init/jrtl-init.lisp
+2019-04-24 16:34:05 <dmiles> more stuff after my doctors appointment
+2019-04-24 16:34:17 <aindilis> kk great, hopefully I'll be less tired then
+2019-04-24 16:34:21 <aindilis> take care!

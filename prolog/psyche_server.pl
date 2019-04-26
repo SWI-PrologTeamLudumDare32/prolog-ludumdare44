@@ -13,6 +13,7 @@
 :- use_module(library(sandbox)).
 :- use_module(pengine_sandbox:game_interact).
 
+:- consult('larkc_client').
 
 :- multifile http:location/3.
 :- dynamic   http:location/3.

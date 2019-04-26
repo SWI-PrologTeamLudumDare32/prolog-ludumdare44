@@ -1,0 +1,270 @@
+<html><head>
+<TITLE>Adventure Game Source Code</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+
+<table border width=100%>
+<tr align="center">
+<td><a href="embed.html"><img src="../../arrows/prev.gif" alt="Prev"></a></td>
+<td><a href="latex.html"><img src="../../arrows/next.gif" alt="Next"></a></td>
+<td><a href="../index-appli.html"><img src="../../arrows/up.gif" alt="Up"></a></td>
+<td><a href="http://www.cwi.nl/projects/alp/index.html"><img src="../../arrows/home.gif" alt="Home"></a></td>
+<td><a href="../../keys.html"><img src="../../arrows/keys.gif" alt="Keys"></a></td>
+<td><a href="../../figs.html"><img src="../../arrows/figs.gif" alt="Figs"></a></td>
+<td><a href="../../search.html"><img src="../../arrows/search.gif" alt="Search"></a></td>
+<td><a href="../../new.html"><img src="../../arrows/new.gif" alt="New"></a></td>
+</tr>
+</table>
+
+<!-- end-of-header -->
+<H1><img src="net.gif">Adventure Game Source Code</h1>
+
+<PRE>
+Appeared in Volume 8/4, November 1995
+</pre><BR>
+
+<b>Keywords</b>: games. <p>
+
+
+
+<b><a href="mailto:vanevery@rbdc.rbdc.com">vanevery@rbdc.rbdc.com</a> <br>
+Brandon Van every<br>
+1st August 1995</b><p>
+
+I'm thinking about writing a Multi-User Dungeon (a MUD) using Prolog as the
+base language.<p>
+
+Can anyone steer me towards some Prolog adventure game sources? They don't have
+to be terribly complicated, and they don't have to be multi-user. <p>
+
+
+<b><a href="mailto:thomasl@groucho.csd.uu.se">thomasl@groucho.csd.uu.se</a> <br>
+Thomas Lindgren<br>
+1st August 1995</b><p>
+
+I haven't written one myself, but here are the basic concepts.<p>
+
+1. You need a parser. Write your own lexical analyzer that reads a stream and
+returns a list of tokens, such as:<p>
+<code>[get,  sword]</code><p>
+or whatever. I am using SICStus here.<p>
+
+Convert a stream into a list of lists of characters using the following
+predicate:<p>
+
+<pre>
+read_from_stream(Stream, CurrList, List_of_lists) :-
+	get0(Stream, Char),
+	( Char =:= -1 -&gt;  /* end-of-file; you might test for 'return' here */
+	 CurrList = [], 
+	 List_of_lists = []
+	; Char =:= 0' -&gt;  /* space: 0' followed by blank */
+	 CurrList = [],
+	 List_of_lists = [NextList | Next_list_of_lists],
+	 read_from_stream(Stream, NextList, Next_list_of_lists)
+	; CurrList = [Char | RestCurrList],
+	 read_from_stream(Stream, RestCurrList, List_of_lists)
+	).
+</pre>
+
+When the input ends (-1 is read), then the current token ends (CurrList = [])
+and there is no more to be read (List_of_lists = []). If you read a space, (0'
+), the current token ends but there is more to be read. Finally, if a non-eof,
+non-blank character is read, put it at the end of the current token and keep
+scanning.<p>
+
+Think of it as a very simple state machine: CurrList and List_of_lists
+accumulate the inputs and change on a transition (in essence, they are kept as
+'pointers to the tails of the lists'). Recursive calls are state transitions
+and the base case (when input ends) is an accepting state.<p>
+
+Here is a wrapper predicate you can call:<p>
+
+<pre>
+read_list_of_lists(Stream, List_of_lists) :-
+  List_of_lists = [Current | Rest],
+  read_from_stream(Stream, Current, Rest).
+</pre>
+
+You want to use the above to read one token from the stream, convert it into an
+atom; then read the next; and so on. Up until the user hits return or the
+stream ends. Conversion into atoms can be done using atom_chars/2 . (If your
+lexical analysis gets complex, I would recommend you use more sophisticated
+methods; such as in O'Keefe's book.)<p>
+
+2. From the list of tokens, you can build a parser using definite clause
+grammars:<p>
+
+<pre>
+parse_action(get(Object)) --&gt; [get], parse_object(Object).
+
+parse_object(sword) --&gt; [sword] | [chalice].
+</pre>
+
+... and so on. Call the parser with action(SyntaxTree,ListOfTokens,[]) and you
+get the SyntaxTree in return. If the parser fails, you know there is something
+wrong - an unknown token, grammatical errors, etc. You can examine the list or
+just print that it is wrong.<p>
+
+3. Once you have a syntax tree, you use an interpreter to implement your
+actions. The interpreter takes an action and an old world and returns a new
+world.<p>
+
+<pre>
+act(get(Object), Old_World, New_World) :-
+	( my_location_has_obj(Object, Old_World) -&gt;
+	 get_object(Object, Old_World, New_World)
+	; interact('object ~q not present.~n',[Object])
+	).
+...
+</pre>
+
+Write a main loop around this:<p>
+
+<pre>
+main_loop(Stream, World) :-
+  read_list_of_lists(Stream, Tokens),
+  ( parse_action(Action, Tokens, []) -&gt;
+	 act(Action, World, NewWorld)
+  ; syntax_error(Tokens),
+	 World = NewWorld
+  ),
+  main_loop(Stream, NewWorld).
+</pre>
+
+You will have to extend the above to detect when the stream ends, print the
+score, or save the world state to a file.<p>
+
+4. You have to implement the world, which is being passed around. If the
+structure of your world is more or less fixed, then implement rooms, their
+connections and descriptions as a database:
+
+<pre>
+room_description(5,'a featureless plain').
+...
+room_connects(5, North, East, West, South) :-
+	North = 5, East = 5, West = 5, South = 5.
+...
+</pre>
+
+Objects are moved around and changing, so make a dictionary mapping object
+names to locations. (Or object ID:s, or what have you.) <p>
+
+The World can now be implemented as a term:<p>
+
+<code>world(MyLocation, MyObjects, WorldObjects)</code><p>
+
+When you move, make a new term with a changed MyLocation:<p>
+
+<pre>
+change_location(New_loc, Old_world, New_world) :-
+	Old_world = world(_Old_loc, MyObj, WorldObj),
+	New_world = world(New_loc, MyObj, WorldObj).
+</pre>
+
+When you get something, make a new WorldObjects without the thing and put it in
+MyObjects; when you drop it, do the other way around. An easy data structure
+for the dictionary is binary trees with two nodes:<p>
+
+leaf<p>
+tree(Left_sub_tree, Key, Value, Right_sub_tree)<p>
+
+Deleting something from the tree means making a new tree where that Key/Value
+pair does not appear. Insertion means making a new tree where the Key/Value
+pair <i>does</i> appear. Updating ... you get the picture.<p>
+
+I would advice you to avoid assert/retract as far as possible, since they are
+horrible and pretty slow. (I say this because it seems to be an instinct of
+Prolog programmers to use the damn things! And I don't want any readers to get
+the wrong idea about how to do this.)<p>
+
+5. If you want to write a MUD, it will have to be able to accept multiple
+concurrent users. A very simple way of doing it is to have the main_loop read
+from several streams and parse several things at once. When one user has formed
+a token stream, you can run that action through the interpreter, update the
+world and carry on without any complex schemes to keep the world consistent
+when there are multiple updates. It might not work well when there are a lot of
+users, though; and you need some way to poll streams.<p>
+
+Well, that is more or less it. Not very sophisticated, but I think you can
+extend the grammar, interpreter, world, etc. pretty easily. <p>
+
+I recommend Richard A. O'Keefe's <i>The Craft of Prolog</i> as a good book to
+get to know how to <i>program</i> in Prolog. <p>
+
+
+<b><a href="mailto:leon@cs.mu.oz.au">leon@cs.mu.oz.au</a> <br>
+Leon Sterling<br>
+9th August 1995</b><p>
+
+Here is the start of a news article by Dennis Merritt I've used the code, not
+especially endorsed, as a starting point for a student project for an
+undergraduate AI class. It works reasonably well. <p>
+
+PCAI reprint of "Exploring Prolog Adventures, Objects, Animals, and Taxes"<br>
+5th December 1993<p>
+
+This article was originally published in <i>PC AI magazine</i>, Volume 7,
+Number 5 September/October 1993. The magazine can be reached at: <p>
+<pre>
+PC AI<br>
+3310 West Bell Rd., Suite 119<br>
+Phoenix, AZ 85023, USA <br>
+Tel +1 602 971 1869<br>
+Fax: +1 602 971 2321<br>
+</pre>
+
+The article is an introduction to Prolog, which attempts to bring out the
+practical benefits of its technical features (e.g. unification, backtracking),
+rather than its theoretical basis.<p>
+
+While I have written a number of "useful" Prolog programs since, I was first
+drawn to Prolog while I was in the middle of writing, for fun, an adventure
+game in C on my first "personal" computer. I had started my C program by
+building the basic tools needed for the game, which included a dynamic database
+to record the changing state of the game, and the ability to search for
+symbolic patterns in the state that indicated some action needed to be taken.
+The action was usually represented by a message to the user and a change of
+state of the game. The article is available from:<p>
+<a href="ftp://ftp.amzi.com/pub/users/amzi/articles/PROFUN.TXT">ftp://ftp.amzi.com/pub/users/amzi/articles/PROFUN.TXT</a><p>
+
+
+<b><a href="mailto:amzi@cybercom.net">amzi@cybercom.net</a><br>
+Dennis Merritt<br>
+19th September 1995</b><p>
+
+There is also my book:<p>
+<pre>
+<i>Adventure in Prolog</i>
+Springer-Verlag
+ISBN 0-387-97315-X, ISBN 3-540-97315-X
+</pre>
+
+It teaches Prolog through the use of an extended example application, which is
+an adventure game.<p>
+
+It has an implementation of the game without asserts and retracts to illustrate
+a 'pure' Prolog approach to the problem, but the primary version uses them.
+While I understand the aversion many Prolog programmers have to
+asserts/retracts (which is basically the same argument that can be made against
+global variables, a constant source of error in conventional programming
+languages), I must confess that I find using the dynamic database for the state
+of an adventure game a very natural solution. <p>
+
+<!-- start-of-footer -->
+
+<table border width=100%>
+<tr align="center">
+<td><a href="embed.html"><img src="../../arrows/prev.gif" alt="Prev"></a></td>
+<td><a href="latex.html"><img src="../../arrows/next.gif" alt="Next"></a></td>
+<td><a href="../index-appli.html"><img src="../../arrows/up.gif" alt="Up"></a></td>
+<td><a href="http://www.cwi.nl/projects/alp/index.html"><img src="../../arrows/home.gif" alt="Home"></a></td>
+<td><a href="../../keys.html"><img src="../../arrows/keys.gif" alt="Keys"></a></td>
+<td><a href="../../figs.html"><img src="../../arrows/figs.gif" alt="Figs"></a></td>
+<td><a href="../../search.html"><img src="../../arrows/search.gif" alt="Search"></a></td>
+<td><a href="../../new.html"><img src="../../arrows/new.gif" alt="New"></a></td> 
+</tr>
+</table>
+
+</body></html>

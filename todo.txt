@@ -7,3 +7,15 @@ hide cursor until you get the create message
 browser testing
 install burn in
 
+(2019-04-18 23:48:37 <anniepoo> 1. have everybody on the LD site and all that
+ set up
+ 2019-04-18 23:48:43 <anniepoo> 2. get publicity out
+ 2019-04-18 23:49:12 <anniepoo> 3. get whatever ggame basis we start with
+ checked into the repo before start
+ 2019-04-18 23:49:41 <anniepoo> 4. get a schedule worked out
+ 2019-04-18 23:49:54 <anniepoo> 5. get everybody on the github org
+ 2019-04-18 23:50:05 <anniepoo> 6. get contact info for everybody
+
+ (ANDY DO #3 on [2019-04-19])
+
+ )

@@ -1,0 +1,211 @@
+@charset "UTF-8";
+/* CSS Document */
+
+/*Body Properties*/
+body {
+	background:#FFFFFF;
+	color:#000000;
+	margin:0;
+	padding:0;
+	width:100%;
+	height:100%;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+}
+
+h1 {
+	font-size:24px;
+	font-weight:bold;
+	font-stretch:wider;
+}
+h2 {
+	font-size:18px;
+	font-weight:bold;
+}
+h3 {
+	font-size:14px;
+	font-weight:bold;
+}
+
+div#grid {
+	max-width:90%;
+}
+
+div#grid table{
+	background-color:#FFFFFF;
+	border:3px;
+	border-style:outset;
+	border-color:#999999;
+}
+
+
+div#grid td, th{
+	padding-left:7px;
+	padding-right:7px;
+	padding-top:5px;
+	padding-bottom:5px;
+	text-align:center;
+	border-width:1px;
+	border-top-style:solid;
+	border-left-style:solid;
+	border-bottom-style:none;
+	border-right-style:none;
+	border-color:#999999;
+	border-spacing:0px;
+}
+
+
+/*
+table.grid {
+	max-width:80%;
+	background-color:#FFFFFF;
+	border:3px;
+	border-style:outset;
+	border-color:#999999;
+}
+
+
+th.grid, td.grid {
+	padding-left:7px;
+	padding-right:7px;
+	padding-top:5px;
+	padding-bottom:5px;
+	text-align:center;
+	border-width:1px;
+	border-top-style:solid;
+	border-left-style:solid;
+	border-bottom-style:none;
+	border-right-style:none;
+	border-color:#999999;
+	border-spacing:0px;
+}
+*/
+
+p.copyright {
+	font-style:italic;
+	font-size:9px;
+	text-align:center;
+}
+
+p.caption {
+	font-style:bold;
+	font-size:10px;
+	text-align:center;
+}
+
+a:link {
+	text-decoration:underline;
+	color:#990000;
+}
+a:hover {
+	font-style:italic;
+	text-decoration:underline;
+	color:#990000;
+}
+a:active {
+	color:#990000;
+	font-style:normal;
+	text-decoration:underline;
+}
+a:visited {
+	color:#000099;
+	text-decoration:underline;
+	font-weight:lighter;
+}
+
+a.black:link {
+	color:#FFFFCC;
+	text-decoration:none;
+	font-size:14px;
+}
+a.black:hover {
+	color:#FFFFCC;
+	font-style:italic;
+	text-decoration:none;
+	font-size:14px;
+}
+a.black:active {
+	color:#FFFFCC;
+	font-style:italic;
+	text-decoration:none;
+	font-size:14px;
+}
+a.black:visited {
+	color:#cc9933;
+	text-decoration:none;
+	font-size:14px;
+}
+
+img.logo1 {
+	margin-left: 3px;
+	border: none;
+	float:left;
+	color:#FFFFCC;
+}
+
+/* divs */
+
+div#big_picture {
+	background:#000000;
+	border:double thick #FF9933;
+	width:800px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:2%;
+}
+
+/* top bar has it's formatting hard wired, since the whole thing gets copied each time */
+
+/* the content below the top bar */
+div#content {
+	background:#ffffcc;
+	width:800px;
+}
+
+/* here's the beef */
+div#big_beef {
+	margin:10px;
+	padding:10px;
+	width:760px;
+	float:left;
+	background:#ffffcc;
+}
+
+div#beef {
+	margin:0px;
+	padding:10px;
+	width:650px;
+	float:left;
+	background:#ffffcc;
+}
+
+
+
+div#leftMenu {
+	padding:10px;
+	width:110px;
+	background:#000000;
+	color:#ffff99;
+	font-family:Verdana, Geneva, sans-serif;
+	font-size:12px;
+	float: left;
+}
+div#leftMenu a:link {
+	color:#FFFFCC;
+	text-decoration:none;
+	font-style:normal;
+}
+div#leftMenu a:hover {
+	color:#FFFFCC;
+	text-decoration:none;
+	font-style:italic;
+}
+div#leftMenu a:active {
+	color:#FFFFCC;
+	text-decoration:none;
+	font-style:italic;
+}
+div#leftMenu a:visited {
+	color:#cc9933;
+	text-decoration:none;
+}

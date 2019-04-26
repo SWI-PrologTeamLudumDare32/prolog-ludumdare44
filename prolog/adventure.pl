@@ -4,6 +4,8 @@
 :- dynamic turned_on/1.
 :- dynamic opened/2.
 
+:- consult('adventure_larkc_client').
+
 room(kitchen).
 room(office).
 room(hall).
@@ -99,8 +101,8 @@ can_go(Place):-
     fail.
 
 move(Place):-
-    retract(here(X)),
-    asserta(here(Place)).
+    larkc_retract(here(X)),
+    larkc_asserta(here(Place)).
 
 take(X):-
     can_take(X),
@@ -117,8 +119,8 @@ can_take(Thing) :-
     nl, fail.
 
 take_object(X) :-
-    retract(location(X,_)),
-    asserta(have(X)),
+    larkc_retract(location(X,_)),
+    larkc_asserta(have(X)),
     write('taken'), nl.
 
 put(X) :-
@@ -135,8 +137,8 @@ can_put(Thing) :-
 
 put_object(X) :-
     here(Location),
-    retract(have(X)),
-    asserta(location(X,Location)),
+    larkc_retract(have(X)),
+    larkc_asserta(location(X,Location)),
     write('put'), nl.
 
 inventory :-
@@ -156,7 +158,7 @@ can_turn_on(X) :-
     nl, fail.
 
 turn_on_object(X) :-
-    asserta(turned_on(X)).
+    larkc_asserta(turned_on(X)).
 
 turn_off(X) :-
     can_turn_off(X),
@@ -172,7 +174,7 @@ can_turn_off(X) :-
     nl, fail.
 
 turn_off_object(X) :-
-    retract(turned_on(X)).
+    larkc_retract(turned_on(X)).
 
 open_door(Location,OtherSide) :-
     can_open_door(Location,OtherSide),
@@ -229,9 +231,9 @@ can_close_door(Location,OtherSide) :-
     nl, fail.
 
 do_close_door(Location,OtherSide) :-
-    retract(opened(Location,OtherSide)).
+    larkc_retract(opened(Location,OtherSide)).
 do_close_door(Location,OtherSide) :-
-    retract(opened(OtherSide,Location)).
+    larkc_retract(opened(OtherSide,Location)).
 
 is_contained_in(T1,T2) :-
     location(T1,T2).
