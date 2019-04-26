@@ -19,4 +19,3 @@ do_larkc_server(A, B) :-
 :- multifile sandbox:safe_primitive/1.
 
 sandbox:safe_primitive(larkc_api:do_larkc_server(_, _)).
-
