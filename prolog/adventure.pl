@@ -24,7 +24,8 @@ opened(kitchen, cellar).
 opened(diningRoom, kitchen).
 location(desk, office).
 location(apple, kitchen).
-location(flashlight, desk).
+%% location(flashlight, desk).
+location(flashlight, office).
 location(washingMachine, cellar).
 location(nani, washingMachine).
 location(broccoli, kitchen).
@@ -214,7 +215,8 @@ is_opened(Location,OtherSide) :-
     opened(OtherSide,Location).
 
 do_open_door(Location,OtherSide) :-
-    assert(opened(Location,OtherSide)).
+	%% assert(opened(Location,OtherSide)).
+	larkc_asserta(opened(Location,OtherSide)).
 
 close_door(Location,OtherSide) :-
     can_close_door(Location,OtherSide),

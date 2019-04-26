@@ -5,6 +5,7 @@
 	  ]).
 
 :- use_module(library(pengines)).
+:- use_module(library(http/http_session)).
 
 :- dynamic current_process/4, current_location/3.
 

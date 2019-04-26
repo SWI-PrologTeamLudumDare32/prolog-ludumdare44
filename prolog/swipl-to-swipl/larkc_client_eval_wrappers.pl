@@ -53,6 +53,10 @@ f(A,O) :-
 	make_quoted_string(A,QA),
 	clEval(['FIND-OR-CREATE-CONSTANT',QA],O).
 
+findConstant(A,O) :-
+	make_quoted_string(A,QA),
+	clEval(['FIND-CONSTANT',QA],O).
+
 cap(A,O) :-
 	make_quoted_string(A,QA),
 	clEval(['CONSTANT-APROPOS',QA],O).
@@ -81,7 +85,15 @@ comment(A,O) :-
 ata(A,O) :-
 	clEval(['ALL-TERM-ASSERTIONS',A],Results),
  	findall(F,(member(Result,Results),clEval(['cyc:assertion-ist-formula',Result],F)),O),
-	write_list(O).
+	writeln(O).
+
+allIsa(A,Mt,O) :-
+	clEval(['ALL-ISA',A,Mt],O),
+ 	writeln(O).
+
+allInstances(A,Mt,O) :-
+	clEval(['ALL-INSTANCES',A,Mt],O),
+ 	writeln(O).
 
 %% ?- f('AndrewDougherty',X).
 %% X = 'CYC:CONSTANT'(336897, '"AndrewDougherty"').

@@ -1,42 +1,126 @@
-loadNaniSearchIntoLarKC :-
-	f(here,X1),
-	cycAssert(['isa','here','UnaryPredicate'],'BaseKB',X2),
-	cycAssert([arity,here,1],'BaseKB',X3),
-	f(room,X4),
-	cycAssert(['isa','room','Collection'],'BaseKB',X5),
-	cycAssert(['arg1Isa','here','room'],'BaseKB',X6),
-	f(kitchen,X7),
-	cycAssert(['isa','kitchen','room'],'BaseKB',X8),
-	f(office,X9),
-	cycAssert(['isa','office','room'],'BaseKB',X10),
-	f(cellar,X11),
-	cycQuery(['isa','cellar','room'],'BaseKB',X12),
-	cycAssert(['here','kitchen'],'BaseKB',X13),
-	cycQuery(['here','?X'],'BaseKB',X14),
-	writeln(X14).
+:- dynamic microtheory/2.
 
-%% %% are([kitchen,office,hall,diningRoom,cellar],room).
+types([
+       are([kitchen,office,hall,diningRoom,cellar],room),
+       are([key],keyType),
+       are([desk,apple,flashight,washingMachine,nani,broccoli,crackers,computer,envelope,stamp,key],naniObject),
+       genls(keyType,naniObject)
+     ]).
 
-%% door(office, hall).
-%% door(kitchen, office).
-%% door(hall, diningRoom).
-%% door(kitchen, cellar).
-%% door(diningRoom, kitchen).
+predicates([
+	    isa(here,'UnaryPredicate'),
+	    arity(here,1),
+	    arg1Isa(here,room),
 
-%% opened(office, hall).
-%% opened(kitchen, office).
-%% % opened(hall, diningRoom).
-%% key_for_door(key,hall,diningRoom).
-%% opened(kitchen, cellar).
-%% opened(diningRoom, kitchen).
-%% location(desk, office).
-%% location(apple, kitchen).
-%% location(flashlight, desk).
-%% location(washingMachine, cellar).
-%% location(nani, washingMachine).
-%% location(broccoli, kitchen).
-%% location(crackers, kitchen).
-%% location(computer, office).
-%% location(envelope, desk).
-%% location(stamp, envelope).
-%% location(key, envelope).
+	    isa(door,'BinaryPredicate'),
+	    arity(door,2),
+	    arg1Isa(door,room),
+	    arg2Isa(door,room),
+
+	    isa(opened,'BinaryPredicate'),
+	    arity(opened,2),
+	    arg1Isa(opened,room),
+	    arg2Isa(opened,room),
+
+	    isa(key_for_door,'TernaryPredicate'),
+	    arity(key_for_door,3),
+	    arg1Isa(key_for_door,keyType),
+	    arg2Isa(key_for_door,room),
+	    arg3Isa(key_for_door,room),
+
+	    isa(location,'BinaryPredicate'),
+	    arity(location,2),
+	    arg1Isa(location,naniObject)
+	    %% arg2Isa(location,naniObject or room)
+	   ]).
+
+init([
+      door(office, hall),
+      door(kitchen, office),
+      door(hall, diningRoom),
+      door(kitchen, cellar),
+      door(diningRoom, kitchen),
+      opened(office, hall),
+      opened(kitchen, office),
+      opened(hall, diningRoom),
+      key_for_door(key,hall,diningRoom),
+      opened(kitchen, cellar),
+      opened(diningRoom, kitchen),
+      location(desk, office),
+      location(apple, kitchen),
+      location(flashlight, office),
+      location(washingMachine, cellar),
+      location(nani, washingMachine),
+      location(broccoli, kitchen),
+      location(crackers, kitchen),
+      location(computer, office),
+      location(envelope, desk),
+      location(stamp, envelope),
+      location(key, envelope)
+     ]).
+
+
+processTypes(SessionID) :-
+	getMicrotheoryFromSessionID(SessionID,Microtheory),
+	types(Ares),
+	member(Are,Ares),
+	Are = are(Objects,Type),
+	createTypeIfNotExists(Type,Microtheory,Result1),
+	member(Object,Objects),
+	createObjectIfNotExists(Object,Type,Microtheory,Result2),
+	fail.
+processTypes(_).
+
+getMicrotheoryFromSessionID(SessionID,Microtheory) :-
+	atomic_list_concat(['LD44',SessionID,'Mt'],'-',Microtheory),
+	writeln([microtheory,Microtheory]),
+	(   microtheory(Microtheory,SessionID) ->
+	    true ;
+	    (	
+		f(Microtheory,Result1),
+		cycAssert([isa,Microtheory,'Microtheory'],'BaseKB',Result2),
+		assert(microtheory(Microtheory,SessionID))
+	    )).
+
+createTypeIfNotExists(Type,Microtheory,Result) :-
+	f(Type,Result1),
+	writeln([resA,Type,Result1,Microtheory]),
+	cycAssert([isa,Type,collection],Microtheory,Result2),
+	writeln([resB,Result2]).
+	
+createObjectIfNotExists(Object,Type,Microtheory,Result) :-
+	f(Object,Result1),
+	writeln(Result1),
+	cycAssert([isa,Object,Type],Microtheory,Result2).
+
+
+processPredicates(SessionID) :-
+	getMicrotheoryFromSessionID(SessionID,Microtheory),
+	predicates(PredicateAssertions),
+	member(Assertion,PredicateAssertions),
+	(   Assertion = isa(Predicate,Type) ->
+	    (	f(Predicate,Result1), writeln([res1,Result1]), true) ;
+	     true),
+	Assertion =.. List,
+	cycAssert(List,Microtheory,Result2),
+	writeln([res2,Assertion,Result2]),
+	fail.
+processPredicates(_).
+
+processInit(SessionID) :-
+	getMicrotheoryFromSessionID(SessionID,Microtheory),
+	init(InitAssertions),
+	member(Assertion,InitAssertions),
+	Assertion =.. List,
+	cycAssert(List,Microtheory,Result2),
+	writeln([res2,Assertion,Result2]),
+	fail.
+processInit(_).
+
+processTypesPredicatesAndInit(SessionID) :-
+	processTypes(SessionID),
+	processPredicates(SessionID),	
+	processInit(SessionID).
+
+loadNaniSearchIntoLarKC(SessionID) :-
+	processTypesPredicatesAndInit(SessionID).

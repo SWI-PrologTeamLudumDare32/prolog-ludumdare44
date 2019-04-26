@@ -31,25 +31,25 @@ user:file_search_path(icons, './icons').
 :- html_resource(pengines_script, [virtual(true), requires([root('pengine/pengines.js')]), mime_type(text/javascript)]).
 
 go :-
-    http_set_session_options([timeout(60)]),
-    http_server(http_dispatch, [port(9870), timeout(180)]).
+	http_set_session_options([timeout(60)]),
+	http_server(http_dispatch, [port(9870), timeout(180)]).
 
 :- http_handler(/, game_handler, []).
 
 :- http_handler(js(.), http_reply_from_files('js/', []),
-           [priority(1000), prefix]).
+		[priority(1000), prefix]).
 :- http_handler(css(.), http_reply_from_files('css/', []),
                 [priority(1000), prefix]).
 :- http_handler(img(.), http_reply_from_files('icons/', []),
                 [priority(1000), prefix]).
 
 game_handler(_Request) :-
-    reply_html_page(
-        [title('Psyche'),
-         link([href('https://fonts.googleapis.com/css?family=IBM+Plex+Mono|VT323'), rel(stylesheet)], [])
-        ]
-        ,
-        \minesweeper_page).
+	reply_html_page(
+			[title('Psyche'),
+			 link([href('https://fonts.googleapis.com/css?family=IBM+Plex+Mono|VT323'), rel(stylesheet)], [])
+			]
+		       ,
+			\minesweeper_page).
 
 minesweeper_page -->
 	html([div(id(codeliketext),
@@ -66,4 +66,3 @@ minesweeper_page -->
 		   input([type(text), name(user), id(inputbox), size(60)], [])
 		  ])
 	     ]).
-

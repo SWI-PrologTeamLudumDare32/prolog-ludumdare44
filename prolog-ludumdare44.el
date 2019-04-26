@@ -91,3 +91,70 @@
 (cond ((string= system-name "ai.frdcsa.org") (defvar ld44-dir "/var/lib/myfrdcsa/codebases/minor/prolog-ludumdare44/")
        (string= system-name "partyserver.rocks") (defvar ld44-dir "/home/aindilis/prolog-ludumdare44/"))
  (t nil))
+
+(defun run-in-shell (command &optional name optional-message mode)
+ ""
+ (let (
+       (mybuffer
+	(progn
+	 ;; (split-window-right)
+	 (get-buffer-create 
+	  (or name
+	   (generate-new-buffer-name "*shell*")))))
+       )
+  (message command)
+  (shell mybuffer)
+  (if mode
+   (kmax-funcall mode nil))
+  ;; (switch-to-buffer mybuffer)
+  (radar-shell-do-command command optional-message)
+  ))
+
+(defun radar-shell-do-command (command &optional optional-message delay)
+ ""
+ (progn
+  (end-of-buffer)
+  
+  ;; FIXME: have to do this somehow without making it a command that
+  ;; is then executed
+
+  ;; (if optional-message
+  ;;  (insert (concat optional-message "\n"))
+  ;; )
+
+  (insert command)
+  (sit-for (or delay 2))
+  (ignore-errors
+   (eshell-send-input))
+  (ignore-errors
+   (comint-send-input))
+  )
+ )
+
+(defun kmax-funcall (function args &optional else finally error-msg)
+ ""
+ ;; e.g. (kmax-funcall 'concat (list "a" "b"))
+ (interactive)
+ ;; (kmax-fixme-silent "implement else finally etc")
+ (condition-case ex
+  (progn
+   (eval (append (list 'funcall 'function) args))
+   )   
+  ('error
+   (see (or error-msg (concat "Function <" function "> did not work with args <" (join " " args) ">"))))))
+
+(defun see (data &optional duration)
+ ""
+ (interactive)
+ (message (prin1-to-string data))
+ (sit-for (if duration duration 2.0))
+ data)
+
+(defun kmax-kill-buffer-no-ask (buffer)
+ ""
+ (save-excursion
+  (pop-to-buffer buffer)
+  (let ((process (get-buffer-process buffer)))
+   (if (non-nil process)
+    (set-process-query-on-exit-flag process nil)))
+  (kill-this-buffer)))
