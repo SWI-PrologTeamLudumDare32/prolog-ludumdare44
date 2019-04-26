@@ -1,3 +1,9 @@
+# editor backup files
+*.*~
+*/*.*~
+*/*/*.*~
+*/*/*/*.*~
+
 # Prerequisites
 *.d
 
