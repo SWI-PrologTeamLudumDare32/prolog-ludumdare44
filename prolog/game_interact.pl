@@ -10,6 +10,7 @@
 :- use_module(library(pengines)).
 :- use_module(library(http/http_session)).
 :- ensure_loaded(adventure).
+:- use_module(parser).
 
 :- dynamic current_process/4, current_location/3.
 
@@ -38,9 +39,10 @@ game_turn(URIRawRequest, Response) :-
 	game_turn_(RawRequest, Response).
 
 game_turn_(Request, Response) :-
-	atom_string(Atom,Request),
-	read_term_from_atom(Atom, Term, [character_escapes(true)]),
-	with_output_to(atom(Got),(call(adventure:Term) -> Response = Got ; Response = Got)).
+	string_codes(Request, Codes),
+	parse(Codes, Term),
+	with_output_to(atom(Response),
+		       adventure:Term).
 
 sandbox:safe_primitive(game_interact:game_turn(_, _)).
 
