@@ -39,7 +39,7 @@ predicates([
 	    arity(have,1),
 	    arg1Isa(have,naniObject),
 
-	    isa(turn_on,'UnaryPredicate')
+	    isa(turn_on,'UnaryPredicate'),
 	    arity(turn_on,1),
 	    arg1Isa(turn_on,device)
 	   ]).
