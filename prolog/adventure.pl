@@ -10,7 +10,8 @@
                       turn_off/1,
                       open_door/2,
                       close_door/2,
-                      puzzle/1]).
+                      puzzle/1,
+                      error_input/0]).
 
 :- dynamic here/1.
 :- dynamic have/1.
@@ -18,6 +19,7 @@
 :- dynamic turned_on/1.
 :- multifile opened/2.
 :- dynamic opened/2.
+
 
 :- use_module(adventure_larkc_client).
 
@@ -305,3 +307,7 @@ puzzle(goto(cellar)) :-
     write('It''s dark and you are afraid of the dark.'),
     !, fail.
 puzzle(_).
+
+
+error_input :-
+    write('I can\'t understand you').

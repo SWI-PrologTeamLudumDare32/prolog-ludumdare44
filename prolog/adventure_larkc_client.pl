@@ -19,14 +19,6 @@ getMt(_) :-
 	throw(error(resource_error(not_in_session), context(larkc_nanisearch_helper:getMt/1,
 						      'must have an http session to assert/retract'))).
 
-/*
-larkc_asserta(X) :-
-	assert(adventure:X).
-
-larkc_retract(X) :-
-	retract(adventure:X).
-*/
-
 larkc_asserta(X) :-
 	getMt(Mt),
 	writeln(asserta(X)),
