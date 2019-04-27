@@ -12,6 +12,7 @@ parse(Codes, Term) :-
     tokenize(Codes, Tokens, [case(false),spaces(false), cntrl(false), to(atoms), pack(false)] ),
     !, % tokenize leaves choice points
     normalize_tokens(Tokens, NormTokens),
+    !, % so does normalize_tokens.
     phrase(adventure_input(Term), NormTokens).
 
 normalize_tokens([], []).
@@ -64,16 +65,24 @@ command(inventory) -->
     [inv] |
     [invent] |
     [inventory].
+command(turn_on(X)) -->
+    (   [turn, on]
+    |   [switch, on]
+    ),
+    thing(X).
+command(turn_off(X)) -->
+    (   [turn, off]
+    |   [switch, off]
+    ),
+    thing(X).
+
 
 place(X) -->
     [X],
     {adventure:room(X)}.
 
 thing(X) -->
-    [X],
-    { larkc_client_eval_wrappers:cycQuery([isa,X,naniObject],'LD44-user_43-Mt',Result), length(Result,L), L > 0 }.
-% adventure:location(X, _)
+    { adventure:hold(location(X, _)) }.
+%    { larkc_client_eval_wrappers:cycQuery([isa,X,naniObject],'LD44-user_43-Mt',Result), %length(Result,L), L > 0 }.
 
-device(X) -->
-    [X],
-    { larkc_client_eval_wrappers:cycQuery([isa,X,device],'LD44-user_43-Mt',Result), length(Result,L), L > 0 }.
+% adventure:location(X, _)

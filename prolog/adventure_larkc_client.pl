@@ -5,6 +5,7 @@
 
 :- use_module(larkc_client).
 :- use_module(larkc_client_eval_wrappers).
+:- use_module(library(pengines)).
 
 :- consult('nanisearch_helper').
 
@@ -13,7 +14,7 @@
 getMt(Mt) :-
 	Mt = 'LD44-user_43-Mt'.
 getMt(Mt) :-
-	http_in_session(Session),
+	pengine_self(Session),
 	atomic_list_concat(['LD44-user_', Session, '-Mt'], Mt).
 getMt(_) :-
 	throw(error(resource_error(not_in_session), context(larkc_nanisearch_helper:getMt/1,

@@ -31,7 +31,7 @@ user:file_search_path(icons, './icons').
 :- html_resource(pengines_script, [virtual(true), requires([root('pengine/pengines.js')]), mime_type(text/javascript)]).
 
 go :-
-	http_set_session_options([timeout(60)]),
+	http_set_session_options([timeout(1800), create(auto), enabled(true)]),
 	http_server(http_dispatch, [port(9870), timeout(180)]).
 
 :- http_handler(/, game_handler, []).
