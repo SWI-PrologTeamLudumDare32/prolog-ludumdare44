@@ -11,17 +11,34 @@
                       open_door/2,
                       close_door/2,
                       puzzle/1,
-                      error_input/0]).
+                      error_input/0,
+                     init_game_state/0]).
 
+:- use_module(library(http/http_session)).
+:- use_module(library(pengines)).
+
+:- dynamic current_hold/2.
+
+hold(X) :-
+    pengine_self(Session),
+    current_hold(Session, X).
+
+retractall_hold(X) :-
+    pengine_self(Session),
+    retractall(current_hold(Session, X)).
+
+asserta_hold(X) :-
+    pengine_self(Session),
+    asserta(current_hold(Session, X)).
+
+/*
 :- dynamic here/1.
 :- dynamic have/1.
 :- dynamic location/2.
 :- dynamic turned_on/1.
 :- multifile opened/2.
 :- dynamic opened/2.
-
-
-:- use_module(adventure_larkc_client).
+*/
 
 room(kitchen).
 room(office).
@@ -33,35 +50,41 @@ door(kitchen, office).
 door(hall, diningRoom).
 door(kitchen, cellar).
 door(diningRoom, kitchen).
-opened(office, hall).
-opened(kitchen, office).
-% opened(hall, diningRoom).
 key_for_door(key,hall,diningRoom).
-opened(kitchen, cellar).
-opened(diningRoom, kitchen).
-location(desk, office).
-location(apple, kitchen).
-% location(flashlight, desk).
-location(flashlight, office).
-location(washingMachine, cellar).
-location(nani, washingMachine).
-location(broccoli, kitchen).
-location(crackers, kitchen).
-location(computer, office).
-location(envelope, desk).
-location(stamp, envelope).
-location(key, envelope).
-
 edible(apple).
 edible(crackers).
 tastes_yucky(broccoli).
-here(kitchen).
+
+
+init_game_state :-
+    maplist(asserta_hold, [
+                opened(office, hall),
+                opened(kitchen, office),
+                % opened(hall, diningRoom),
+
+                opened(kitchen, cellar),
+                opened(diningRoom, kitchen),
+                location(desk, office),
+                location(apple, kitchen),
+                % location(flashlight, desk),
+                location(flashlight, office),
+                location(washingMachine, cellar),
+                location(nani, washingMachine),
+                location(broccoli, kitchen),
+                location(crackers, kitchen),
+                location(computer, office),
+                location(envelope, desk),
+                location(stamp, envelope),
+                location(key, envelope),
+                here(kitchen)
+            ]).
+
 
 where_food(X,Y) :-
-    location(X,Y),
+    hold(location(X,Y)),
     edible(X).
 where_food(X,Y) :-
-    location(X,Y),
+    hold(location(X,Y)),
     tastes_yucky(X).
 
 connect(X,Y) :- door(X,Y).
@@ -70,7 +93,7 @@ connect(X,Y) :- door(Y,X).
 list_things(Place) :-
     list_things_s(Place).
 list_things(Place) :-
-    location(X, Place),
+    hold(location(X, Place)),
     tab(2),
     write(X),
     nl,
@@ -86,7 +109,7 @@ list_connections(Place) :-
 list_connections(_).
 
 look :-
-    here(Place),
+    hold(here(Place)),
     write('You are in the '), write(Place), nl,
     write('You can see:'), nl,
     list_things(Place),
@@ -96,7 +119,7 @@ look :-
 
 look_in(Place) :-
     write('In '), write(Place), write(' are the following:'), nl,
-    location(X, Place),
+    hold(location(X, Place)),
     tab(2), write(X), fail.
 look_in(_).
 
@@ -107,11 +130,11 @@ goto(Place):-
     look.
 
 can_go(Place):-
-    here(X),
+    hold(here(X)),
     connect(X,Place),
     is_opened(X,Place).
 can_go(Place):-
-    here(X),
+    hold(here(X)),
     connect(X,Place),
     write('The door is shut.'), nl, fail.
 can_go(_):-
@@ -119,8 +142,8 @@ can_go(_):-
     fail.
 
 move(Place):-
-    larkc_retract(here(_)),
-    larkc_asserta(here(Place)).
+    retractall_hold(here(_)),
+    asserta_hold(here(Place)).
 
 take(X):-
     can_take(X),
@@ -129,7 +152,7 @@ take(X):-
 can_take(Thing) :-
     can_take_s(Thing).
 can_take(Thing) :-
-    here(Place),
+    hold(here(Place)),
     is_contained_in(Thing, Place).
 can_take(Thing) :-
     write('There is no '), write(Thing),
@@ -137,8 +160,8 @@ can_take(Thing) :-
     nl, fail.
 
 take_object(X) :-
-    larkc_retract(location(X,_)),
-    larkc_asserta(have(X)),
+    retractall_hold(location(X,_)),
+    asserta_hold(have(X)),
     write('taken'), nl.
 
 put(X) :-
@@ -146,22 +169,22 @@ put(X) :-
     put_object(X).
 
 can_put(Thing) :-
-    here(_),
-    have(Thing).
+    hold(here(_)),
+    hold(have(Thing)).
 can_put(Thing) :-
     write('You cannot place '), write(Thing),
     write(' here.'),
     nl, fail.
 
 put_object(X) :-
-    here(Location),
-    larkc_retract(have(X)),
-    larkc_asserta(location(X,Location)),
+    hold(here(Location)),
+    retractall_hold(have(X)),
+    asserta_hold(location(X,Location)),
     write('put'), nl.
 
 inventory :-
     write('You have the following things:'), nl,
-    have(X), tab(3), write(X), nl, fail.
+    hold(have(X)), tab(3), write(X), nl, fail.
 inventory.
 
 turn_on(X) :-
@@ -169,22 +192,22 @@ turn_on(X) :-
     turn_on_object(X).
 
 can_turn_on(X) :-
-    have(X).
+    hold(have(X)).
 can_turn_on(X) :-
     write('You cannot turn on '), write(X),
     write('..'),
     nl, fail.
 
 turn_on_object(X) :-
-    larkc_asserta(turned_on(X)).
+    asserta_hold(turned_on(X)).
 
 turn_off(X) :-
     can_turn_off(X),
     turn_off_object(X).
 
 can_turn_off(X) :-
-    have(X),
-    turned_on(X).
+    hold(have(X)),
+    hold(turned_on(X)).
 
 can_turn_off(X) :-
     write('You cannot turn off '), write(X),
@@ -192,14 +215,14 @@ can_turn_off(X) :-
     nl, fail.
 
 turn_off_object(X) :-
-    larkc_retract(turned_on(X)).
+    retractall_hold(turned_on(X)).
 
 open_door(Location,OtherSide) :-
     can_open_door(Location,OtherSide),
     do_open_door(Location,OtherSide).
 
 can_open_door(Location,OtherSide) :-
-    here(Location),
+    hold(here(Location)),
     connect(Location,OtherSide).
 can_open_door(Location,OtherSide) :-
     write('You cannot open the door from '), write(Location),
@@ -207,18 +230,18 @@ can_open_door(Location,OtherSide) :-
     nl, fail.
 
 % can_open_door(Location,OtherSide) :-
-%     here(Location),
+%     hold(here(Location)),
 %     connect(Location,OtherSide).
 %     key_for_door(Key,Location,OtherSide).
-%     not(have(Key)),
+%     not(hold(have(Key))),
 %     write('You need the key'),nl,fail.
 % can_open_door(Location,OtherSide) :-
-%     here(Location),
+%     hold(here(Location)),
 %     connect(Location,OtherSide).
 %     key_for_door(Key,Location,OtherSide).
-%     have(Key).
+%     hold(have(Key)).
 % can_open_door(Location,OtherSide) :-
-%     here(Location),
+%     hold(here(Location)),
 %     connect(Location,OtherSide).
 %     not(key_for_door(Key,Location,OtherSide)).
 % can_open_door(Location,OtherSide) :-
@@ -227,20 +250,20 @@ can_open_door(Location,OtherSide) :-
 %     nl, fail.
 
 is_opened(Location,OtherSide) :-
-    opened(Location, OtherSide).
+    hold(opened(Location, OtherSide)).
 is_opened(Location,OtherSide) :-
-    opened(OtherSide,Location).
+    hold(opened(OtherSide,Location)).
 
 do_open_door(Location,OtherSide) :-
 	%% assert(opened(Location,OtherSide)).
-	larkc_asserta(opened(Location,OtherSide)).
+	asserta_hold(opened(Location,OtherSide)).
 
 close_door(Location,OtherSide) :-
     can_close_door(Location,OtherSide),
     do_close_door(Location,OtherSide).
 
 can_close_door(Location,OtherSide) :-
-    here(Location),
+    hold(here(Location)),
     connect(Location,OtherSide),
     is_opened(Location,OtherSide).
 
@@ -250,20 +273,20 @@ can_close_door(Location,OtherSide) :-
     nl, fail.
 
 do_close_door(Location,OtherSide) :-
-    larkc_retract(opened(Location,OtherSide)).
+    retractall_hold(opened(Location,OtherSide)).
 do_close_door(Location,OtherSide) :-
-    larkc_retract(opened(OtherSide,Location)).
+    retractall_hold(opened(OtherSide,Location)).
 
 is_contained_in(T1,T2) :-
-    location(T1,T2).
+    hold(location(T1,T2)).
 is_contained_in(T1,T2) :-
-    location(X,T2),
+    hold(location(X,T2)),
     is_contained_in(T1,X).
 
 is_contained_in_b(T1,T2) :-
-    location(T1,T2).
+    hold(location(T1,T2)).
 is_contained_in_b(T1,T2) :-
-    location(T1,X),
+    hold(location(T1,X)),
     is_contained_in_b(X,T2).
 
 % object(candle, red, small, 1).
@@ -277,16 +300,16 @@ location_s(object(apple, green, small, 1), kitchen).
 location_s(object(table, blue, big, 50), kitchen).
 
 can_take_s(Thing):-
-    here(Room),
+    hold(here(Room)),
     location_s(object(Thing, _, small, _), Room).
 can_take_s(Thing) :-
-    here(Room),
+    hold(here(Room)),
     location_s(object(Thing, _, big, _), Room),
     write('The '), write(Thing),
     write(' is too big to carry.'), nl,
     fail.
 can_take_s(Thing) :-
-    here(Room),
+    hold(here(Room)),
     not(location_s(object(Thing, _, _, _), Room)),
     write('There is no '), write(Thing), write(' here.'), nl,
     fail.
@@ -300,8 +323,8 @@ list_things_s(Place) :-
     fail.
 
 puzzle(goto(cellar)) :-
-    have(flashlight),
-    turned_on(flashlight),
+    hold(have(flashlight)),
+    hold(turned_on(flashlight)),
     !.
 puzzle(goto(cellar)) :-
     write('It''s dark and you are afraid of the dark.'),

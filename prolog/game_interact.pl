@@ -23,6 +23,7 @@ create_game('THE RAIN MAKES MUD PUDDLES') :-
 	debug(ld(redundant), 'game already created', []).
 create_game(_) :-
 	pengine_self(PengineID),
+	init_game_state,
 	thread_at_exit(kill_game(PengineID)).
 
 :- multifile sandbox:safe_primitive/1.
