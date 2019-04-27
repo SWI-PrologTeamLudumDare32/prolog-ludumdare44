@@ -16,15 +16,20 @@ parse(Codes, Term) :-
 
 normalize_tokens([], []).
 normalize_tokens([word(W)|T], NT) :-
-    porter_stem(W, Stem),
+    porter_stem_and_adjust(W, Stem),
     member(Stem, [a, an, the, of, for]),
     normalize_tokens(T, NT).
 normalize_tokens([word(W)|T], [Stem|NT]) :-
-    porter_stem(W, Stem),
+    porter_stem_and_adjust(W, Stem),
     normalize_tokens(T, NT).
 normalize_tokens([_|T], NT) :-
     normalize_tokens(T, NT).
 
+porter_stem_and_adjust(W, Stem) :-
+	porter_stem(W,TmpStem),
+	(   substitute(TmpStem,Stem) -> true ; Stem = TmpStem).
+
+substitute(offic,office).
 
 adventure_input(X) -->
     ... ,
@@ -61,4 +66,6 @@ place(X) -->
     {adventure:room(X)}.
 
 thing(X) -->
-    { adventure:location(X, _) }.
+    { larkc_client_eval_wrappers:cycQuery([isa,X,naniObject],'LD44-user_43-Mt',Result), length(Result,L), L > 0 }.
+
+% adventure:location(X, _)
