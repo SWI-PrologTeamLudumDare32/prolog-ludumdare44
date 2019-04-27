@@ -39,9 +39,9 @@ predicates([
 	    arity(have,1),
 	    arg1Isa(have,naniObject),
 
-	    isa(turn_on,'UnaryPredicate'),
-	    arity(turn_on,1),
-	    arg1Isa(turn_on,device)
+	    isa(turned_on,'UnaryPredicate'),
+	    arity(turned_on,1),
+	    arg1Isa(turned_on,device)
 	   ]).
 
 init([
@@ -145,14 +145,3 @@ processTypesPredicatesAndInit(SessionID) :-
 
 loadNaniSearchIntoLarKC(SessionID) :-
 	processTypesPredicatesAndInit(SessionID).
-
-
-
-
-
-
-
-
-
-
-

@@ -70,20 +70,20 @@ getAllConstantsInTerm(Term,Constants) :-
 	print_term(Results,[]),
 	list_to_set(Results,Constants).
 
-defineLarkcMyFn :-
-	f(larkcMtFn,_),
-	cycAssert([isa,larkcMtFn,'UnaryFunction'],'BaseKB',_),
-	cycAssert([resultIsa,larkcMtFn,'Microtheory'],'BaseKB',_),
-	cycAssert([arg1Isa,larkcMtFn,'CharacterString'],'BaseKB',_),
-	cycAssert([arity,larkcMtFn,1],'BaseKB',_),
-	cycAssert([isa,[larkcMtFn,'"Org::CYC::Base"'],'Microtheory'],'BaseKB',X).
+%% defineLarkcMyFn :-
+%% 	f(larkcMtFn,_),
+%% 	cycAssert([isa,larkcMtFn,'UnaryFunction'],'BaseKB',_),
+%% 	cycAssert([resultIsa,larkcMtFn,'Microtheory'],'BaseKB',_),
+%% 	cycAssert([arg1Isa,larkcMtFn,'CharacterString'],'BaseKB',_),
+%% 	cycAssert([arity,larkcMtFn,1],'BaseKB',_),
+%% 	cycAssert([isa,[larkcMtFn,'"Org::CYC::Base"'],'Microtheory'],'BaseKB',X).
 
-testLarkcMyFn :-
-	cl_eval(['CYC-ASSERT',[quote,[isa,'AndrewDougherty','Person']],[quote,[larkcMtFn,'"Org::CYC::BaseKB"']]],X),
-	cl_eval(['ALL-ISA',larkcMtFn,'BaseKB'],X),
-	cycQuery([arity,larkcMtFn,'?X'],'BaseKB',X),
-	cl_eval(['ALL-ISA','AndrewDougherty','POSICommunityMt'],X),
-	f('MaximilianDougherty',_),
-	cl_eval(['CYC-ASSERT',[quote,[isa,'MaximilianDougherty','Dog']],[quote,[larkcMtFn,'"Org::CYC::BaseKB"']]],X),
-	cl_eval(['ALL-ISA','MaximilianDougherty',[quote,[larkcMtFn,'"Org::CYC::BaseKB"']]],X),
-	cl_eval(['HL-WHY-NOT-WFF',[quote,[isa,'MaximilianDougherty','Dog']],[quote,[larkcMtFn,'"Org::CYC::BaseKB"']]],X).
+%% testLarkcMyFn :-
+%% 	cl_eval(['CYC-ASSERT',[quote,[isa,'AndrewDougherty','Person']],[quote,[larkcMtFn,'"Org::CYC::BaseKB"']]],X),
+%% 	cl_eval(['ALL-ISA',larkcMtFn,'BaseKB'],X),
+%% 	cycQuery([arity,larkcMtFn,'?X'],'BaseKB',X),
+%% 	cl_eval(['ALL-ISA','AndrewDougherty','POSICommunityMt'],X),
+%% 	f('MaximilianDougherty',_),
+%% 	cl_eval(['CYC-ASSERT',[quote,[isa,'MaximilianDougherty','Dog']],[quote,[larkcMtFn,'"Org::CYC::BaseKB"']]],X),
+%% 	cl_eval(['ALL-ISA','MaximilianDougherty',[quote,[larkcMtFn,'"Org::CYC::BaseKB"']]],X),
+%% 	cl_eval(['HL-WHY-NOT-WFF',[quote,[isa,'MaximilianDougherty','Dog']],[quote,[larkcMtFn,'"Org::CYC::BaseKB"']]],X).
