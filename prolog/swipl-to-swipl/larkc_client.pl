@@ -1,14 +1,16 @@
 :- use_module(library(pengines)).
 :- use_module(library(statistics)).
+:- use_module(library(hostname)).
 
 larkcCall(Callable) :-
-	pengine_rpc('http://partyserver.rocks:9880',Callable).
+	(   hostname(ai) -> pengine_rpc('http://127.0.0.1:9880',Callable) ; pengine_rpc('http://partyserver.rocks:9880',Callable)).
+
 
 clEval(SubL,Result) :-
 	larkcCall(larkc_api:my_cl_eval(SubL,Result)).
 
 larkcClCall(SubL,Result) :-
-	pengine_rpc('http://partyserver.rocks:9880',my_cl_eval(SubL,Result)).
+	(   hostname(ai) -> pengine_rpc('http://127.0.0.1:9880',my_cl_eval(SubL,Result)) ; pengine_rpc('http://partyserver.rocks:9880',my_cl_eval(SubL,Result))).
 
 :- consult('larkc_client_code').
 :- consult('larkc_client_eval_wrappers').
