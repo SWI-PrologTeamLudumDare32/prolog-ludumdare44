@@ -9,7 +9,7 @@
 
 :- consult('nanisearch_helper').
 
-:- writeln('be sure to run `loadNaniSearchIntoLarKC(SessionID).` after larkc_server.pl is finished loading').
+:- writeln('be sure to run `nanisearch_helper:loadNaniSearchIntoLarKC(user_43).` after larkc_server.pl is finished loading').
 
 getMt(Mt) :-
 	Mt = 'LD44-user_43-Mt'.

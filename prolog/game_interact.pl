@@ -43,7 +43,8 @@ game_turn_(Request, Response) :-
 	string_codes(Request, Codes),
 	parse(Codes, Term),
 	with_output_to(atom(Response),
-		       adventure:Term).
+		       adventure:Term),
+	!.
 
 sandbox:safe_primitive(game_interact:game_turn(_, _)).
 
