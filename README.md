@@ -14,6 +14,10 @@ Thanks Andrew!
 # Architecture
 
 The game is served over the web, from a SWI-Prolog server. 
+
+First ensure you have the genutils pack installed, e.g. by running
+`swipl` and then running `pack_install(genutils).`
+
 Start the server with
 
 cd prolog/
@@ -24,6 +28,25 @@ The game is now served at http://localhost:9870/
 The server uses Cyc as a back end. We have a pengines interface to Cyc.
 This is served from the server partyserver.rocks
 
-<Andrew, fill in how to run the back end server>
+# Running LarKC_CL's Pengine Server on http://partyserver.rocks:9870/
 
+Become the user aindilis on the partyserver.rocks system.  Then do:
 
+cd /home/aindilis/prolog-ludumdare44/scripts
+
+followed by:
+
+./start-larkc-server.sh
+
+That should start the server.  Note that if you are trying to get it
+running on other systems besides partyserver.rocks or ai.frdcsa.org
+you will need to change the env vars in
+
+/home/aindilis/prolog-ludumdare44/scripts/envvars.sh
+
+to point to the right location.  Add a conditional for your hostname
+and then put the proper values in for LD44ROOT and LARKC_CL
+
+Note that since distribution of LarKC_CL/RCyc is limited we are not
+providing installation instructions at this time.  We are however
+working to integrate LarKC_CL/OCyc as a drop in replacement.
