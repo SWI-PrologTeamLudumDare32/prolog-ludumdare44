@@ -3,6 +3,7 @@
                       look/0,
                       look_in/1,
                       goto/1,
+                      move/1,
                       put/1,
                       inventory/0,
                       turn_on/1,
@@ -38,7 +39,7 @@ opened(kitchen, cellar).
 opened(diningRoom, kitchen).
 location(desk, office).
 location(apple, kitchen).
-%% location(flashlight, desk).
+% location(flashlight, desk).
 location(flashlight, office).
 location(washingMachine, cellar).
 location(nani, washingMachine).
