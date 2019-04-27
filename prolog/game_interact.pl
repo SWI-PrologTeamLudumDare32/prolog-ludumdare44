@@ -3,9 +3,13 @@
 	   create_game/1,
 	   game_turn/2
 	  ]).
-
+/** <module> handle interactions from the game web page to the server via pengine
+ *
+ * this module gets imported into the sandbox
+ */
 :- use_module(library(pengines)).
 :- use_module(library(http/http_session)).
+:- ensure_loaded(adventure).
 
 :- dynamic current_process/4, current_location/3.
 
@@ -24,10 +28,6 @@ create_game(_) :-
 
 sandbox:safe_primitive(game_interact:create_game(_)).
 
-kill_all_processes(PengineID) :-
-	setof(PID, current_process(PengineID, PID, _, _), PIDS),
-	maplist(process_kill, PIDS).
-
 kill_game(PengineID) :-
 	current_process(PengineID, PID, _, _),
 	process_kill(PID).
@@ -40,6 +40,22 @@ game_turn(URIRawRequest, Response) :-
 game_turn_(Request, Response) :-
 	atom_string(Atom,Request),
 	read_term_from_atom(Atom, Term, [character_escapes(true)]),
-	with_output_to(atom(Got),(call(Term) -> Response = Got ; Response = Got)).
+	with_output_to(atom(Got),(@(call(Term),adventure) -> Response = Got ; Response = Got)).
 
 sandbox:safe_primitive(game_interact:game_turn(_, _)).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

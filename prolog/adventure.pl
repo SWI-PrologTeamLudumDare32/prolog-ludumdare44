@@ -1,3 +1,16 @@
+:- module(adventure, [list_things/1,
+                      list_connections/1,
+                      look/0,
+                      look_in/1,
+                      goto/1,
+                      put/1,
+                      inventory/0,
+                      turn_on/1,
+                      turn_off/1,
+                      open_door/2,
+                      close_door/2,
+                      puzzle/1]).
+
 :- dynamic here/1.
 :- dynamic have/1.
 :- dynamic location/2.
@@ -5,7 +18,7 @@
 :- multifile opened/2.
 :- dynamic opened/2.
 
-:- consult('adventure_larkc_client').
+:- use_module(adventure_larkc_client).
 
 room(kitchen).
 room(office).
@@ -151,7 +164,7 @@ inventory.
 turn_on(X) :-
     can_turn_on(X),
     turn_on_object(X).
-    
+
 can_turn_on(X) :-
     have(X).
 can_turn_on(X) :-
@@ -165,7 +178,7 @@ turn_on_object(X) :-
 turn_off(X) :-
     can_turn_off(X),
     turn_off_object(X).
-    
+
 can_turn_off(X) :-
     have(X),
     turned_on(X).
@@ -253,7 +266,7 @@ is_contained_in_b(T1,T2) :-
 % object(candle, red, small, 1).
 % object(apple, red, small, 1).
 % object(apple, green, small, 1).
-% object(table, blue, big, 50). 
+% object(table, blue, big, 50).
 
 location_s(object(candle, red, small, 1), kitchen).
 location_s(object(apple, red, small, 1), kitchen).

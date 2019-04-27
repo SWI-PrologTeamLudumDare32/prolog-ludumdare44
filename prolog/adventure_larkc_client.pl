@@ -1,4 +1,14 @@
+:- module(adventure_larkc_client, [larkc_asserta/1,
+				   larkc_retract/1]).
+
 :- use_module(library(http/http_session)).
+
+:- use_module(larkc_client).
+:- use_module(larkc_client_eval_wrappers).
+
+:- consult('nanisearch_helper').
+
+:- writeln('be sure to run `loadNaniSearchIntoLarKC(SessionID).` after larkc_server.pl is finished loading').
 
 getMt(Mt) :-
 	Mt = 'LD44-user_43-Mt'.
@@ -26,5 +36,3 @@ larkc_retract(X) :-
 	cycUnassert(List,Mt,Result),
 	retract(Item),
 	writeln(Result).
-
-:- consult('larkc_nanisearch_helper').

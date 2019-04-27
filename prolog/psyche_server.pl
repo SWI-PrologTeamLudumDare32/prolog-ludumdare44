@@ -1,19 +1,19 @@
-:- consult('adventure.pl').
+:- module(psyche_server, [go/0]).
+
+/** <module> The web server that serves the game the user sees.
+ * This is our middleware layer
+ */
 
 :- use_module(library(http/thread_httpd)).
 :- use_module(library(http/http_dispatch)).
 :- use_module(library(http/http_session)).
 :- use_module(library(http/html_write)).
-:- use_module(library(http/http_parameters)).
 :- use_module(library(http/html_head)).
 :- use_module(library(http/http_files)).
-:- use_module(library(pengines)).
-:- use_module(game_interact).
+:- ensure_loaded(library(pengines)).
 
-:- use_module(library(sandbox)).
+:- ensure_loaded(library(sandbox)).
 :- use_module(pengine_sandbox:game_interact).
-
-:- consult('larkc_client').
 
 :- multifile http:location/3.
 :- dynamic   http:location/3.
@@ -66,3 +66,5 @@ minesweeper_page -->
 		   input([type(text), name(user), id(inputbox), size(60)], [])
 		  ])
 	     ]).
+
+

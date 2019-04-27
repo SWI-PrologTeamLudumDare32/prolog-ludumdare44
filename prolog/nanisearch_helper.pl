@@ -1,3 +1,8 @@
+:- module(nanisearch_helper, [init/1,
+			     loadNaniSearchIntoLarKC/1]).
+
+:- use_module(larkc_client_eval_wrappers).
+
 :- dynamic microtheory/2.
 
 types([
