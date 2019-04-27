@@ -6,7 +6,7 @@ make_quoted_string(A,QA) :-
 			   ],'',QA).
 
 cycQuery(Query,Results) :-
-	cycQuery(Query,'EverythingPSC',Result).
+	cycQuery(Query,'EverythingPSC',Results).
 
 %% doesn't work right now
 
@@ -68,11 +68,7 @@ apropos(A,O) :-
 	make_quoted_string(A,QA),
 	clEval(['APROPOS',QA],O).
 
-findConstant(A,O) :-
-	make_quoted_string(A,QA),
-	clEval(['FIND-CONSTANT',QA],O).
-
-createOnlyIfNewConstant(A,Result) :-
+createOnlyIfNewConstant(A,O) :-
 	make_quoted_string(A,QA),
 	clEval(['FIND-CONSTANT',QA],O),
 	(   O = [] ->

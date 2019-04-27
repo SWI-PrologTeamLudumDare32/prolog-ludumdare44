@@ -13,8 +13,8 @@ larkc_load_database(AgentName,FormalogName,Context) :-
 	kquery(AgentName,FormalogName,nil,Bindings),
 	larkc_assert_list(Bindings,Context).
 
-larkc_assert_list( [ ], Context ).
-larkc_assert_list( [ X | Y ], Context ):- write('Asserting: '),write_term(X,[quoted(true)]),larkc_assert(X,Context,Result),nl,larkc_assert_list( Y ).
+larkc_assert_list( [ ], _ ).
+larkc_assert_list( [ X | Y ], Context ):- write('Asserting: '),write_term(X,[quoted(true)]),larkc_assert(X,Context,_),nl,larkc_assert_list( Y ).
 
 noFunctionsInMicrotheoryNames(0).
 
@@ -56,7 +56,7 @@ ensureMicrotheoryExists(Context,Microtheory,Result) :-
 ensureConstantsInTermExist(Assertion) :-
 	getAllConstantsInTerm(Assertion,Constants),
 	print_term(Constants,[]),
-	forall(member(Constant,Constants),findConstant(Constant,Result)).
+	forall(member(Constant,Constants),findConstant(Constant,_)).
 
 getAllConstantsInTerm(Term,Constants) :-
 	(   is_list(Term) ->

@@ -2,6 +2,7 @@
 :- dynamic have/1.
 :- dynamic location/2.
 :- dynamic turned_on/1.
+:- multifile opened/2.
 :- dynamic opened/2.
 
 :- consult('adventure_larkc_client').
@@ -97,12 +98,12 @@ can_go(Place):-
     here(X),
     connect(X,Place),
     write('The door is shut.'), nl, fail.
-can_go(Place):-
+can_go(_):-
     write('You can''t get there from here.'), nl,
     fail.
 
 move(Place):-
-    larkc_retract(here(X)),
+    larkc_retract(here(_)),
     larkc_asserta(here(Place)).
 
 take(X):-
@@ -129,7 +130,7 @@ put(X) :-
     put_object(X).
 
 can_put(Thing) :-
-    here(Place),
+    here(_),
     have(Thing).
 can_put(Thing) :-
     write('You cannot place '), write(Thing),
@@ -154,7 +155,7 @@ turn_on(X) :-
 can_turn_on(X) :-
     have(X).
 can_turn_on(X) :-
-    write('You cannot turn on '), write(Thing),
+    write('You cannot turn on '), write(X),
     write('..'),
     nl, fail.
 
@@ -170,7 +171,7 @@ can_turn_off(X) :-
     turned_on(X).
 
 can_turn_off(X) :-
-    write('You cannot turn off '), write(Thing),
+    write('You cannot turn off '), write(X),
     write('..'),
     nl, fail.
 

@@ -16,7 +16,7 @@ create_game('THE RAIN MAKES MUD PUDDLES') :-
 	current_process(PengineID, _, _, _),
 	!,
 	debug(ld(redundant), 'game already created', []).
-create_game(Response) :-
+create_game(_) :-
 	pengine_self(PengineID),
 	thread_at_exit(kill_game(PengineID)).
 
