@@ -88,8 +88,9 @@
    (not (equal arg nil)))
   t))
 
-(cond ((string= system-name "ai.frdcsa.org") (defvar ld44-dir "/var/lib/myfrdcsa/codebases/minor/prolog-ludumdare44/")
-       (string= system-name "partyserver.rocks") (defvar ld44-dir "/home/aindilis/prolog-ludumdare44/"))
+(cond
+ ((string= system-name "ai.frdcsa.org") (defvar ld44-dir "/var/lib/myfrdcsa/codebases/minor/prolog-ludumdare44/"))
+ ((string= system-name "li1167-61.members.linode.com") (defvar ld44-dir "/home/aindilis/prolog-ludumdare44/"))
  (t nil))
 
 (defun run-in-shell (command &optional name optional-message mode)

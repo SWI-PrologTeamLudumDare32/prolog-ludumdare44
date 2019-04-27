@@ -3,7 +3,9 @@
 types([
        are([kitchen,office,hall,diningRoom,cellar],room),
        are([key],keyType),
-       are([desk,apple,flashight,washingMachine,nani,broccoli,crackers,computer,envelope,stamp,key],naniObject),
+       are([desk,apple,washingMachine,nani,broccoli,crackers,computer,envelope,stamp,key],naniObject),
+       are([flashlight],device),
+       genls(device,naniObject),
        genls(keyType,naniObject)
      ]).
 
@@ -30,8 +32,16 @@ predicates([
 
 	    isa(location,'BinaryPredicate'),
 	    arity(location,2),
-	    arg1Isa(location,naniObject)
+	    arg1Isa(location,naniObject),
 	    %% arg2Isa(location,naniObject or room)
+
+	    isa(have,'UnaryPredicate'),
+	    arity(have,1),
+	    arg1Isa(have,naniObject),
+
+	    isa(turn_on,'UnaryPredicate')
+	    arity(turn_on,1),
+	    arg1Isa(turn_on,device)
 	   ]).
 
 init([
@@ -62,12 +72,23 @@ init([
 
 processTypes(SessionID) :-
 	getMicrotheoryFromSessionID(SessionID,Microtheory),
-	types(Ares),
-	member(Are,Ares),
-	Are = are(Objects,Type),
-	createTypeIfNotExists(Type,Microtheory,Result1),
-	member(Object,Objects),
-	createObjectIfNotExists(Object,Type,Microtheory,Result2),
+	types(Assertions),
+	member(Assertion,Assertions),
+	(   Assertion = are(Objects,Type) ->
+	    (
+	     createTypeIfNotExists(Type,Microtheory,Result1),
+	     member(Object,Objects),
+	     createObjectIfNotExists(Object,Type,Microtheory,Result2)
+	    ) ;
+	    (	Assertion = genls(SubType,SuperType) ->
+		(
+		 createTypeIfNotExists(SubType,Microtheory,Result3),
+		 writeln([result3,Result3]),
+		 createTypeIfNotExists(SuperType,Microtheory,Result4),
+		 writeln([result4,Result4]),
+		 cycAssert([genls,SubType,SuperType],Microtheory,Result5),
+		 writeln([result5,Result5])
+		) ; true)),
 	fail.
 processTypes(_).
 
