@@ -19,9 +19,17 @@ getMt(_) :-
 	throw(error(resource_error(not_in_session), context(larkc_nanisearch_helper:getMt/1,
 						      'must have an http session to assert/retract'))).
 
+/*
+larkc_asserta(X) :-
+	assert(adventure:X).
+
+larkc_retract(X) :-
+	retract(adventure:X).
+*/
+
 larkc_asserta(X) :-
 	getMt(Mt),
-	writeln(asserta(X)),
+	writeln(asserta(adventure:X)),
 	X =.. List,
 	cycAssert(List,Mt,Result),
 	assert(X),
@@ -29,9 +37,9 @@ larkc_asserta(X) :-
 
 larkc_retract(X) :-
 	getMt(Mt),
-	findall(X,X,Is),
+	findall(X,adventure:X,Is),
 	member(Item,Is),
-	writeln(retract(Item)),
+	writeln(retract(adventure:Item)),
 	Item =.. List,
 	cycUnassert(List,Mt,Result),
 	retract(Item),
