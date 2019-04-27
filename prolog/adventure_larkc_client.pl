@@ -29,18 +29,18 @@ larkc_retract(X) :-
 
 larkc_asserta(X) :-
 	getMt(Mt),
-	writeln(asserta(adventure:X)),
+	writeln(asserta(X)),
 	X =.. List,
 	cycAssert(List,Mt,Result),
-	assert(X),
+	assert(adventure:X),
 	writeln(Result).
 
 larkc_retract(X) :-
 	getMt(Mt),
 	findall(X,adventure:X,Is),
 	member(Item,Is),
-	writeln(retract(adventure:Item)),
+	writeln(retract(Item)),
 	Item =.. List,
 	cycUnassert(List,Mt,Result),
-	retract(Item),
+	retract(adventure:Item),
 	writeln(Result).
