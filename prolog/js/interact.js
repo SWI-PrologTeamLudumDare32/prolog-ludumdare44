@@ -33,7 +33,8 @@ window.addEventListener('load', function() {
   			 }
   			 inputbox.value = ""
   			 inputbox.focus();
-          inputbox.disabled = false;
+		    inputbox.disabled = false;
+		    document.getElementById( 'bottom' ).scrollIntoView();
   		}
   		if(this.more) {
   		    mypen.next();

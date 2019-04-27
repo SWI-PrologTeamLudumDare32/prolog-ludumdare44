@@ -64,8 +64,12 @@ minesweeper_page -->
 		  [
 		   label(for(user), blink('\u25b6')),
 		   input([type(text), name(user), id(inputbox), size(60)], [])
-		  ])
+		  ]),
+	      div(id(bottom),
+		  [
+		   ])
 	     ]).
+
 
 
 
