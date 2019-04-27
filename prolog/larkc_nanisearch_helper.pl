@@ -76,9 +76,9 @@ processTypes(SessionID) :-
 	member(Assertion,Assertions),
 	(   Assertion = are(Objects,Type) ->
 	    (
-	     createTypeIfNotExists(Type,Microtheory,Result1),
+	     createTypeIfNotExists(Type,Microtheory,_Result1),
 	     member(Object,Objects),
-	     createObjectIfNotExists(Object,Type,Microtheory,Result2)
+	     createObjectIfNotExists(Object,Type,Microtheory,_Result2)
 	    ) ;
 	    (	Assertion = genls(SubType,SuperType) ->
 		(
@@ -97,29 +97,29 @@ getMicrotheoryFromSessionID(SessionID,Microtheory) :-
 	writeln([microtheory,Microtheory]),
 	(   microtheory(Microtheory,SessionID) ->
 	    true ;
-	    (	
-		f(Microtheory,Result1),
-		cycAssert([isa,Microtheory,'Microtheory'],'BaseKB',Result2),
+	    (
+		f(Microtheory,_Result1),
+		cycAssert([isa,Microtheory,'Microtheory'],'BaseKB',_Result2),
 		assert(microtheory(Microtheory,SessionID))
 	    )).
 
-createTypeIfNotExists(Type,Microtheory,Result) :-
+createTypeIfNotExists(Type,Microtheory,_Result) :-
 	f(Type,Result1),
 	writeln([resA,Type,Result1,Microtheory]),
 	cycAssert([isa,Type,collection],Microtheory,Result2),
 	writeln([resB,Result2]).
-	
-createObjectIfNotExists(Object,Type,Microtheory,Result) :-
+
+createObjectIfNotExists(Object,Type,Microtheory,_Result) :-
 	f(Object,Result1),
 	writeln(Result1),
-	cycAssert([isa,Object,Type],Microtheory,Result2).
+	cycAssert([isa,Object,Type],Microtheory,_Result2).
 
 
 processPredicates(SessionID) :-
 	getMicrotheoryFromSessionID(SessionID,Microtheory),
 	predicates(PredicateAssertions),
 	member(Assertion,PredicateAssertions),
-	(   Assertion = isa(Predicate,Type) ->
+	(   Assertion = isa(Predicate,_Type) ->
 	    (	f(Predicate,Result1), writeln([res1,Result1]), true) ;
 	     true),
 	Assertion =.. List,
@@ -140,8 +140,19 @@ processInit(_).
 
 processTypesPredicatesAndInit(SessionID) :-
 	processTypes(SessionID),
-	processPredicates(SessionID),	
+	processPredicates(SessionID),
 	processInit(SessionID).
 
 loadNaniSearchIntoLarKC(SessionID) :-
 	processTypesPredicatesAndInit(SessionID).
+
+
+
+
+
+
+
+
+
+
+
