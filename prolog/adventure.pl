@@ -195,7 +195,7 @@ move(Place):-
     asserta_hold(here(Place)).
 
 take(X):-
-    can_take(X),
+    %% can_take(X),
     take_object(X).
 
 can_take(Thing) :-
@@ -237,7 +237,7 @@ inventory :-
 inventory.
 
 turn_on(X) :-
-    can_turn_on(X),
+    %% can_turn_on(X),
     turn_on_object(X).
 
 can_turn_on(X) :-

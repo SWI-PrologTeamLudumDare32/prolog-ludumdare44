@@ -44,12 +44,17 @@ init([
       location(envelope, desk),
       location(stamp, envelope),
       location(key, envelope),
-      here(kitchen)
+      here(kitchen),
+
+      neg(turned_on(flashlight)),
+      neg(have(flashlight))
      ]).
+
 
 generatePredicatesFromTypesAndInit(SessionID) :-
 	init(Init),
-	member(Assertion,Init),
+	member(TmpAssertion,Init),
+	(   TmpAssertion = neg(Assertion) -> true ; TmpAssertion = Assertion),	
 	Assertion =.. [Predicate|Arguments],
 	length(Arguments,Arity),
 	(   predicate(Predicate,Arity) -> true ; assert(predicate(Predicate,Arity))),
@@ -73,7 +78,11 @@ generatePredicatesFromTypesAndInit(SessionID) :-
 	predicate(Predicate,Arity),
 	writeln([predicate,Predicate,arity,Arity]),
 	init(Init),
-	findall(Arguments,(member(Assertion,Init),Assertion =.. [Predicate|Arguments], length(Arguments,Arity)),ListOfLists),
+	findall(Arguments,(
+			   member(TmpAssertion,Init),
+			   (   TmpAssertion = neg(Assertion) -> true ; TmpAssertion = Assertion),
+			   Assertion =.. [Predicate|Arguments], length(Arguments,Arity)
+			  ),ListOfLists),
 	%% writeln([listOfLists,ListOfLists]),
 	foreach(between(1,Arity,N),
 		(
@@ -186,7 +195,8 @@ processPredicates(_).
 processInit(SessionID) :-
 	getMicrotheoryFromSessionID(SessionID,Microtheory),
 	init(InitAssertions),
-	member(Assertion,InitAssertions),
+	member(TmpAssertion,InitAssertions),
+	(   TmpAsserion = neg(Assertion) -> fail ; TmpAssertion = Assertion),
 	Assertion =.. List,
 	cycAssert(List,Microtheory,Result2),
 	writeln([res2,Assertion,Result2]),

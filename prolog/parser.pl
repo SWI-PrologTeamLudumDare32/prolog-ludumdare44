@@ -83,5 +83,8 @@ place(X) -->
 
 thing(X) -->
 	[X],
-	{ hold(isa(X, naniObject)), writeln([x,X]) }.
-%    { larkc_client_eval_wrappers:cycQuery([isa,X,naniObject],'LD44-user_43-Mt',Result), %length(Result,L), L > 0 }.
+	{ hold(isa(X, naniObject)) }.
+
+device(X) -->
+	[X],
+	{ hold(isa(X, device))}.
