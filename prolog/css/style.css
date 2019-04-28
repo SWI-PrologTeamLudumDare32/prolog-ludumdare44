@@ -3,22 +3,22 @@
     opacity: 1;
   }
   20% {
-  	 opacity: 1;
+	 opacity: 1;
   }
   21% {
-  	 opacity: 0.3;
+	 opacity: 0.3;
    }
  25% {
-    opacity: 0.9; 
+    opacity: 0.9;
  }
   50% {
     opacity: 1;
   }
   70% {
-    opacity: 0.8;  
+    opacity: 0.8;
   }
   100% {
-  	 opacity: 1;
+	 opacity: 1;
   }
 }
 
@@ -29,26 +29,25 @@
 }
 
 blink {
-  animation: blinker 600ms infinite;
-  color: #00FF00;
+  color: #FFFFFF;
   margin-right: 6px;
 }
 
 
 code {
 	display: block;
-	font-family: 'VT323', monospace;	
+	font-family: 'VT323', monospace;
 	white-space: pre-line;
 	}
-	
+
 #codeliketext {
       max-width: 600px;
 }
 
 body {
-	animation: flicker 6000ms infinite;
+/*	animation: flicker 6000ms infinite;  */
     background-color: #000000;
-    color: #00aa00;
+    color: #FFFFFF;
    font-family: 'VT323', monospace;
 /* font-family: 'IBM Plex Mono', monospace; */
 }
@@ -59,7 +58,7 @@ body {
     border: none;
     caret-color: #00FF00;
     font-family: 'VT323', monospace;
-    font-size: 120%;	
+    font-size: 120%;
 }
 
 input:focus {
