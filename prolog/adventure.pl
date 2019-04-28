@@ -12,7 +12,8 @@
                       close_door/2,
                       puzzle/1,
                       error_input/0,
-                     init_game_state/0]).
+		      init_game_state/0,
+		      hold/1]).
 
 :- use_module(library(http/http_session)).
 :- use_module(library(pengines)).
