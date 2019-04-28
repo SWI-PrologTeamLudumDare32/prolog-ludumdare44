@@ -55,6 +55,35 @@ edible(apple).
 edible(crackers).
 tastes_yucky(broccoli).
 
+:- dynamic described/2.
+
+longd(office, 'home office, with a desk, computer, work lamp, and chair').
+shortd(office, 'home office').
+
+long_description(X, Long) :-
+    longd(X, Long),
+    !.
+long_description(X, X).
+
+short_description(X, Long) :-
+    shortd(X, Long),
+    !.
+short_description(X, X).
+
+
+
+describe(X, D) :-
+    pengine_self(ID),
+    (   \+ described(ID, X)
+    ->  asserta(described(ID, X)),
+        long_description(X, D)
+    ;   short_description(X, D)
+    ).
+
+write_description(X) :-
+    describe(X, D),
+    write(D).
+
 
 init_game_state :-
     maplist(asserta_hold, [
@@ -95,7 +124,7 @@ list_things(Place) :-
 list_things(Place) :-
     hold(location(X, Place)),
     tab(2),
-    write(X),
+    write_description(X),
     nl,
     fail.
 list_things(_).
@@ -110,7 +139,8 @@ list_connections(_).
 
 look :-
     hold(here(Place)),
-    write('You are in the '), write(Place), nl,
+    describe(Place, Desc),
+    write('You are in the '), write(Desc), nl,
     write('You can see:'), nl,
     list_things(Place),
     write('You can go to:'), nl,
@@ -118,9 +148,9 @@ look :-
 
 
 look_in(Place) :-
-    write('In '), write(Place), write(' are the following:'), nl,
+    write('In '), write_description(Place), write(' are the following:'), nl,
     hold(location(X, Place)),
-    tab(2), write(X), fail.
+    tab(2), write_description(X), fail.
 look_in(_).
 
 goto(Place):-
@@ -155,7 +185,8 @@ can_take(Thing) :-
     hold(here(Place)),
     is_contained_in(Thing, Place).
 can_take(Thing) :-
-    write('There is no '), write(Thing),
+    write('There is no '),
+    write_description(Thing),
     write(' here.'),
     nl, fail.
 
@@ -172,7 +203,8 @@ can_put(Thing) :-
     hold(here(_)),
     hold(have(Thing)).
 can_put(Thing) :-
-    write('You cannot place '), write(Thing),
+    write('You cannot place '),
+    write_description(Thing),
     write(' here.'),
     nl, fail.
 
@@ -183,8 +215,13 @@ put_object(X) :-
     write('put'), nl.
 
 inventory :-
-    write('You have the following things:'), nl,
-    hold(have(X)), tab(3), write(X), nl, fail.
+    write('You have the following things:'),
+    nl,
+    hold(have(X)),
+    tab(3),
+    write_description(X),
+    nl,
+    fail.
 inventory.
 
 turn_on(X) :-
@@ -194,7 +231,8 @@ turn_on(X) :-
 can_turn_on(X) :-
     hold(have(X)).
 can_turn_on(X) :-
-    write('You cannot turn on '), write(X),
+    write('You cannot turn on '),
+    write_description(X),
     write('..'),
     nl, fail.
 
@@ -210,7 +248,8 @@ can_turn_off(X) :-
     hold(turned_on(X)).
 
 can_turn_off(X) :-
-    write('You cannot turn off '), write(X),
+    write('You cannot turn off '),
+    write_description(X),
     write('..'),
     nl, fail.
 
@@ -225,9 +264,13 @@ can_open_door(Location,OtherSide) :-
     hold(here(Location)),
     connect(Location,OtherSide).
 can_open_door(Location,OtherSide) :-
-    write('You cannot open the door from '), write(Location),
-    write('.to '), write(OtherSide), write('.'),
-    nl, fail.
+    write('You cannot open the door from '),
+    write_description(Location),
+    write('.to '),
+    write_description(OtherSide),
+    write('.'),
+    nl,
+    fail.
 
 % can_open_door(Location,OtherSide) :-
 %     hold(here(Location)),
@@ -268,8 +311,11 @@ can_close_door(Location,OtherSide) :-
     is_opened(Location,OtherSide).
 
 can_close_door(Location,OtherSide) :-
-    write('You cannot close the door from '), write(Location),
-    write('.to '), write(OtherSide), write('.'),
+    write('You cannot close the door from '),
+    write_description(Location),
+    write('.to '),
+    write_description(OtherSide),
+    write('.'),
     nl, fail.
 
 do_close_door(Location,OtherSide) :-
@@ -305,20 +351,24 @@ can_take_s(Thing):-
 can_take_s(Thing) :-
     hold(here(Room)),
     location_s(object(Thing, _, big, _), Room),
-    write('The '), write(Thing),
+    write('The '),
+    write_description(Thing),
     write(' is too big to carry.'), nl,
     fail.
 can_take_s(Thing) :-
     hold(here(Room)),
     not(location_s(object(Thing, _, _, _), Room)),
-    write('There is no '), write(Thing), write(' here.'), nl,
+    write('There is no '),
+    write_description(Thing),
+    write(' here.'), nl,
     fail.
 
 list_things_s(Place) :-
     location_s(object(Thing, Color, Size, Weight), Place),
     write('A '),write(Size),tab(1),
     write(Color),tab(1),
-    write(Thing),write(', weighing '),
+    write_description(Thing),
+    write(', weighing '),
     write(Weight), write(' pounds'), nl,
     fail.
 
@@ -331,6 +381,5 @@ puzzle(goto(cellar)) :-
     !, fail.
 puzzle(_).
 
-
 error_input :-
-    write('I can\'t understand you').
+    write('I can\'t understand that').
