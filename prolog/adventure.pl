@@ -17,19 +17,60 @@
 :- use_module(library(http/http_session)).
 :- use_module(library(pengines)).
 
+:- use_module(nanisearch_helper).
+:- use_module(larkc_hold).
+
 :- dynamic current_hold/2.
 
 hold(X) :-
-    pengine_self(Session),
-    current_hold(Session, X).
+	larkc_hold(X).
+
+prolog_hold(X) :-
+	pengine_self(Session),
+	current_hold(Session, X).
+
+
+my_larkc_hold(X) :-
+	pengine_self(Session),
+	%% writeln([session(Session)]),
+	getMicrotheoryFromSessionID(Session,Mt),
+	%% writeln([mt(Mt)]),
+	X =.. List,
+	%% writeln([list(List)]),
+	cycQuery([here,'?X'],Mt,Result),
+	%% writeln([larkc_hold,Result]),
+	findall(here(Res),member(Res,Result),Assertions),
+	member(X,Assertions).
 
 retractall_hold(X) :-
-    pengine_self(Session),
-    retractall(current_hold(Session, X)).
+	larkc_retractall_hold(X).
+
+prolog_retractall_hold(X) :-
+	pengine_self(Session),
+	retractall(current_hold(Session, X)).
 
 asserta_hold(X) :-
-    pengine_self(Session),
-    asserta(current_hold(Session, X)).
+	larkc_asserta_hold(X).
+
+prolog_asserta_hold(X) :-
+	pengine_self(Session),
+	asserta(current_hold(Session, X)).
+
+larkc_retractall_hold(X) :-
+	pengine_self(Session),
+	retractall(current_hold(Session, X)).
+	
+getMt(Session,Mt) :-
+	atomic_list_concat(['LD44-user_', Session, '-Mt'], Mt).
+
+larkc_asserta_hold(X) :-
+	pengine_self(Session),
+	asserta(current_hold(Session, X)),
+	getMicrotheoryFromSessionID(Session,Mt),
+	writeln([asserta(X),mt(Mt)]),
+	X =.. List,
+	cycAssert(List,Mt,Result),
+	writeln([larkc_asserta_hold,Result]).
 
 /*
 :- dynamic here/1.
@@ -55,9 +96,12 @@ edible(apple).
 edible(crackers).
 tastes_yucky(broccoli).
 
-
 init_game_state :-
-    maplist(asserta_hold, [
+	larkc_init_game_state.
+	%% prolog_init_game_state.
+
+prolog_init_game_state :-
+    maplist(prolog_asserta_hold, [
                 opened(office, hall),
                 opened(kitchen, office),
                 % opened(hall, diningRoom),
@@ -79,6 +123,11 @@ init_game_state :-
                 here(kitchen)
             ]).
 
+larkc_init_game_state :-
+	writeln(larkc_init_game_state),
+	pengine_self(Session),
+	loadNaniSearchIntoLarKC(Session),
+	writeln(done_larkc_init_game_state).
 
 where_food(X,Y) :-
     hold(location(X,Y)),
@@ -109,13 +158,15 @@ list_connections(Place) :-
 list_connections(_).
 
 look :-
-    hold(here(Place)),
-    write('You are in the '), write(Place), nl,
-    write('You can see:'), nl,
-    list_things(Place),
-    write('You can go to:'), nl,
-    list_connections(Place).
-
+	writeln(hello),
+	pengine_self(Session),
+	writeln(Session),
+        hold(here(Place)),
+	write('You are in the '), write(Place), nl,
+	write('You can see:'), nl,
+	list_things(Place),
+	write('You can go to:'), nl,
+	list_connections(Place).
 
 look_in(Place) :-
     write('In '), write(Place), write(' are the following:'), nl,

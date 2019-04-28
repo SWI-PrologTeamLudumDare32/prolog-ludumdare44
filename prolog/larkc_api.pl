@@ -10,7 +10,7 @@ foo(X) :-
 	writeln(X).
 
 my_cl_eval(Item,Result) :-
-	user:cl_eval(Item,Result).
+	system:cl_eval(Item,Result).
 
 :- multifile sandbox:safe_primitive/1.
 

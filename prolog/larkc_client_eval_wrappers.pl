@@ -1,11 +1,13 @@
 :- module(larkc_client_eval_wrappers, [cycQuery/2,
+				       cycQuery/3,
 				       cycAssert/2,
 				       cycAssert/3,
 				       cycUnassert/2,
 				       cycUnassert/3,
-				      q/2,
-				      q/3,
-				      f/2]).
+				       q/2,
+				       q/3,
+				       f/2,
+				       allIsa/3]).
 
 :- use_module(larkc_client).
 
@@ -28,6 +30,7 @@ cycQuery(Query,Mt,Result) :-
 	% append([P],A,F),
 	% NQuery = ['ASK-TEMPLATE',[quote,'?X'],[quote,F],Mt],
 	NQuery = ['ASK-TEMPLATE',[quote,'?X'],[quote,Query],[quote,Mt]],
+	write_term(clEval(NQuery,Result),[quoted(true)]),
 	clEval(NQuery,Result).
 
 % ?- cycQuery(['isa','?X','Dog'],'EverythingPSC',Result).
@@ -62,7 +65,17 @@ cycUnassert(Assertion,Mt,Result) :-
 
 f(A,O) :-
 	make_quoted_string(A,QA),
-	clEval(['FIND-OR-CREATE-CONSTANT',QA],O).
+	findConstant(A,TmpO),
+	(   TmpO = [] ->
+	    clEval(['CREATE-CONSTANT',QA],O) ; O = TmpO),
+	write([findOrCreateConstant,O]).
+
+%% f(A,O) :-
+%% 	write([a]),
+%% 	make_quoted_string(A,QA),
+%% 	write([QA]),
+%% 	clEval(['FIND-OR-CREATE-CONSTANT',QA],O),
+%% 	write([findOrCreateConstant,O]).
 
 findConstant(A,O) :-
 	make_quoted_string(A,QA),

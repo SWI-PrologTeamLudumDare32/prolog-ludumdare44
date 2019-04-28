@@ -11,6 +11,7 @@ larkcCall(Callable) :-
 
 
 clEval(SubL,Result) :-
+	writeln([subL,SubL]),
 	larkcCall(larkc_api:my_cl_eval(SubL,Result)).
 
 larkcClCall(SubL,Result) :-

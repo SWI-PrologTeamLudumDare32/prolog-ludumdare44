@@ -84,5 +84,3 @@ place(X) -->
 thing(X) -->
     { adventure:hold(location(X, _)) }.
 %    { larkc_client_eval_wrappers:cycQuery([isa,X,naniObject],'LD44-user_43-Mt',Result), %length(Result,L), L > 0 }.
-
-% adventure:location(X, _)
