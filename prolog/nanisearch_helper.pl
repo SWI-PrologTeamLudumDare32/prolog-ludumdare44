@@ -2,6 +2,7 @@
 			      getMicrotheoryFromSessionID/2,
 			      loadNaniSearchIntoLarKC/1,
 			      cycAssert/3,
+			      cycUnassert/3,
 			      cycQuery/3,
 			      allIsa/3
 			     ]).

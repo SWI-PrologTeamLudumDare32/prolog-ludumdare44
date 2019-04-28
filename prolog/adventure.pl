@@ -29,19 +29,6 @@ prolog_hold(X) :-
 	pengine_self(Session),
 	current_hold(Session, X).
 
-
-my_larkc_hold(X) :-
-	pengine_self(Session),
-	%% writeln([session(Session)]),
-	getMicrotheoryFromSessionID(Session,Mt),
-	%% writeln([mt(Mt)]),
-	X =.. List,
-	%% writeln([list(List)]),
-	cycQuery([here,'?X'],Mt,Result),
-	%% writeln([larkc_hold,Result]),
-	findall(here(Res),member(Res,Result),Assertions),
-	member(X,Assertions).
-
 retractall_hold(X) :-
 	larkc_retractall_hold(X).
 
@@ -58,19 +45,29 @@ prolog_asserta_hold(X) :-
 
 larkc_retractall_hold(X) :-
 	pengine_self(Session),
-	retractall(current_hold(Session, X)).
-	
+	%% retractall(current_hold(Session, X)),
+	getMicrotheoryFromSessionID(Session,Mt),
+	findall(X,larkc_hold(X),Is),
+	member(Item,Is),
+	writeln(retract(Item)),
+	Item =.. List,
+	cycUnassert(List,Mt,Result),
+	writeln([Result,larkc_retractall_hold]),
+	fail.
+larkc_retractall_hold(_).
+
+
 getMt(Session,Mt) :-
 	atomic_list_concat(['LD44-user_', Session, '-Mt'], Mt).
 
 larkc_asserta_hold(X) :-
 	pengine_self(Session),
-	asserta(current_hold(Session, X)),
+	%% asserta(current_hold(Session, X)),
 	getMicrotheoryFromSessionID(Session,Mt),
 	writeln([asserta(X),mt(Mt)]),
 	X =.. List,
 	cycAssert(List,Mt,Result),
-	writeln([larkc_asserta_hold,Result]).
+	writeln([Result,larkc_asserta_hold]).
 
 /*
 :- dynamic here/1.
@@ -136,8 +133,8 @@ where_food(X,Y) :-
     hold(location(X,Y)),
     tastes_yucky(X).
 
-connect(X,Y) :- door(X,Y).
-connect(X,Y) :- door(Y,X).
+connect(X,Y) :- hold(door(X,Y)).
+connect(X,Y) :- hold(door(Y,X)).
 
 list_things(Place) :-
     list_things_s(Place).
