@@ -76,6 +76,11 @@ command(turn_off(X)) -->
     ),
     thing(X).
 
+command(util:assert(ld44Flag(debug))) -->
+	[debug,on].
+
+command(util:retractall(ld44Flag(debug))) -->
+	[debug,off].
 
 place(X) -->
     [X],

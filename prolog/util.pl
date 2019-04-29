@@ -2,8 +2,9 @@
 		 html_tab/1
 		]).
 
+:- dynamic ld44Flag/1.
+
 %% ld44Flag(debug).
-ld44Flag(nodebug).
 
 viewIf(Item) :-
  	(   ld44Flag(debug) -> 
