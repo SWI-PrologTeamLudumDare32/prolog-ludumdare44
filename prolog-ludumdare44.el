@@ -56,12 +56,14 @@
 (defun ld44-restart-client ()
  ""
  (interactive)
+ (ld44-set-windows)
  (ld44-kill-client)
  (ld44-start-client))
 
 (defun ld44-restart-server ()
  ""
  (interactive)
+ (ld44-set-windows)
  (ld44-kill-server)
  (ld44-start-server))
 

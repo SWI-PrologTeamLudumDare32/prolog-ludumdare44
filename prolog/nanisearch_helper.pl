@@ -9,6 +9,7 @@
 
 :- use_module(larkc_client_eval_wrappers).
 :- use_module(nanisearch_helper).
+:- use_module(util).
 
 :- dynamic microtheory/2, predicate/2.
 
@@ -63,33 +64,33 @@ generatePredicatesFromTypesAndInit(SessionID) :-
 	getMicrotheoryFromSessionID(SessionID,Microtheory),
 	predicate(Predicate,Arity),
 	f(Predicate,Result0),
-	writeln([result0,Result0]),
+	viewIf([result0,Result0]),
 	(   Arity = 1 -> PredicateType = 'UnaryPredicate' ;
 	    (	Arity = 2 -> PredicateType = 'BinaryPredicate' ;
 		(   Arity = 3 -> PredicateType = 'TernaryPredicate' ;
 		    (	writeln('ERROR: larger predicate than weve defined'),fail)))),
 	cycAssert([isa,Predicate,PredicateType],Microtheory,Result1),
-	writeln([result1,Result1]),
+	viewIf([result1,Result1]),
 	cycAssert([arity,Predicate,Arity],Microtheory,Result2),
-	writeln([result2,Result2]),	
+	viewIf([result2,Result2]),	
 	fail.
 generatePredicatesFromTypesAndInit(SessionID) :-
 	getMicrotheoryFromSessionID(SessionID,Microtheory),
 	predicate(Predicate,Arity),
-	writeln([predicate,Predicate,arity,Arity]),
+	viewIf([predicate,Predicate,arity,Arity]),
 	init(Init),
 	findall(Arguments,(
 			   member(TmpAssertion,Init),
 			   (   TmpAssertion = neg(Assertion) -> true ; TmpAssertion = Assertion),
 			   Assertion =.. [Predicate|Arguments], length(Arguments,Arity)
 			  ),ListOfLists),
-	%% writeln([listOfLists,ListOfLists]),
+	%% viewIf([listOfLists,ListOfLists]),
 	foreach(between(1,Arity,N),
 		(
 		 findall(Type,(member(Arguments,ListOfLists),nth1(N,Arguments,Argument),allIsa(Argument,Microtheory,Types),member(Type,Types)),AllTypes),
 		 nth1(1,AllTypes,Type),
 		 cycAssert([argIsa,Predicate,N,Type],Microtheory,Result1),
-		 writeln([result1a,Result1])
+		 viewIf([result1a,Result1])
 		)),
 	fail.
 generatePredicatesFromTypesAndInit(_) :-
@@ -145,18 +146,18 @@ processTypes(SessionID) :-
 	    (	Assertion = genls(SubType,SuperType) ->
 		(
 		 createTypeIfNotExists(SubType,Microtheory,Result3),
-		 writeln([result3,Result3]),
+		 viewIf([result3,Result3]),
 		 createTypeIfNotExists(SuperType,Microtheory,Result4),
-		 writeln([result4,Result4]),
+		 viewIf([result4,Result4]),
 		 cycAssert([genls,SubType,SuperType],Microtheory,Result5),
-		 writeln([result5,Result5])
+		 viewIf([result5,Result5])
 		) ; true)),
 	fail.
 processTypes(_).
 
 getMicrotheoryFromSessionID(SessionID,Microtheory) :-
 	atomic_list_concat(['LD44',SessionID,'Mt'],'-',Microtheory),
-	writeln([microtheory,Microtheory]),
+	viewIf([microtheory,Microtheory]),
 	(   microtheory(Microtheory,SessionID) ->
 	    true ;
 	    (	
@@ -166,15 +167,15 @@ getMicrotheoryFromSessionID(SessionID,Microtheory) :-
 	    )).
 
 createTypeIfNotExists(Type,Microtheory,_Result) :-
-	write([type,Type]),
+	viewIf([type,Type]),
 	f(Type,Result1),
-	writeln([resA,Type,Result1,Microtheory]),
+	viewIf([resA,Type,Result1,Microtheory]),
 	cycAssert([isa,Type,collection],Microtheory,Result2),
-	writeln([resB,Result2]).
+	viewIf([resB,Result2]).
 
 createObjectIfNotExists(Object,Type,Microtheory,_Result) :-
 	f(Object,Result1),
-	writeln(Result1),
+	viewIf(Result1),
 	cycAssert([isa,Object,Type],Microtheory,_Result2).
 
 
@@ -184,11 +185,11 @@ processPredicates(SessionID) :-
 	predicates(PredicateAssertions),
 	member(Assertion,PredicateAssertions),
 	(   Assertion = isa(Predicate,_Type) ->
-	    (	f(Predicate,Result1), writeln([res1,Result1]), true) ;
+	    (	f(Predicate,Result1), viewIf([res1,Result1]), true) ;
 	     true),
 	Assertion =.. List,
 	cycAssert(List,Microtheory,Result2),
-	writeln([res2,Assertion,Result2]),
+	viewIf([res2,Assertion,Result2]),
 	fail.
 processPredicates(_).
 */
@@ -200,7 +201,7 @@ processInit(SessionID) :-
 	(   TmpAssertion = neg(Assertion) -> fail ; TmpAssertion = Assertion),
 	Assertion =.. List,
 	cycAssert(List,Microtheory,Result2),
-	writeln([res2,Assertion,Result2]),
+	viewIf([res2,Assertion,Result2]),
 	fail.
 processInit(_).
 

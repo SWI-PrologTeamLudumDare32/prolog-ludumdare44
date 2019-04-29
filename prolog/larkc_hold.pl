@@ -5,13 +5,14 @@
 :- use_module(library(pengines)).
 :- use_module(nanisearch_helper).
 :- use_module(larkc_client_eval_wrappers).
+:- use_module(util).
 
 % larkc_hold(Mt,here(X)) and generate clEval(['ASK-TEMPLATE',[quote,'?X'],[quote,[here,'?X']],[quote,Mt]]).
 
 larkc_hold(Prolog):-
 	pengine_self(Session),
 	getMicrotheoryFromSessionID(Session,Mt),
-	write_term([prolog,Prolog],[quoted(true)]),
+	viewIf([prolog,Prolog]),
 	larkc_hold(Mt,Prolog).
 
 larkc_hold(Mt,Prolog):-
@@ -21,7 +22,7 @@ larkc_hold(Mt,Prolog):-
 	harden_cycl_vars(PrologVars+ISTFORM,CycLVars+ISTLISP),
 	ISTLISP = ['ist',HLMt,ELAsk],
 	cl_quote(Q),
-	write_term(larkc_client:clEval(['ASK-TEMPLATE',[Q,CycLVars],[Q,ELAsk],[Q,HLMt]],ResultL),[quoted(true)]),
+	viewIf(larkc_client:clEval(['ASK-TEMPLATE',[Q,CycLVars],[Q,ELAsk],[Q,HLMt]],ResultL)),
 	larkc_client:clEval(['ASK-TEMPLATE',[Q,CycLVars],[Q,ELAsk],[Q,HLMt]],ResultL),
 	member(Result,ResultL),
 	unify_cycl_form(PrologVars,Result).

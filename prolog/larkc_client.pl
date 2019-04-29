@@ -6,12 +6,14 @@
 :- use_module(library(statistics)).
 :- use_module(library(hostname)).
 
+:- use_module(util).
+
 larkcCall(Callable) :-
 	(   hostname(ai) -> pengine_rpc('http://127.0.0.1:9880',Callable) ; pengine_rpc('http://partyserver.rocks:9880',Callable)).
 
 
 clEval(SubL,Result) :-
-	writeln([subL,SubL]),
+	viewIf([subL,SubL]),
 	larkcCall(larkc_api:my_cl_eval(SubL,Result)).
 
 larkcClCall(SubL,Result) :-

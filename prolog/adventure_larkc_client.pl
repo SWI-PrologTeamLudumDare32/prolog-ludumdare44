@@ -8,5 +8,3 @@
 :- use_module(library(pengines)).
 
 :- consult('nanisearch_helper').
-
-:- writeln('be sure to run `nanisearch_helper:loadNaniSearchIntoLarKC(user_43).` after larkc_server.pl is finished loading').

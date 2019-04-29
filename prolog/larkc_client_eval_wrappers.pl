@@ -10,6 +10,7 @@
 				       allIsa/3]).
 
 :- use_module(larkc_client).
+:- use_module(util).
 
 make_quoted_string(A,QA) :-
 	atomic_list_concat([
@@ -30,7 +31,7 @@ cycQuery(Query,Mt,Result) :-
 	% append([P],A,F),
 	% NQuery = ['ASK-TEMPLATE',[quote,'?X'],[quote,F],Mt],
 	NQuery = ['ASK-TEMPLATE',[quote,'?X'],[quote,Query],[quote,Mt]],
-	write_term(clEval(NQuery,Result),[quoted(true)]),
+	viewIf(clEval(NQuery,Result)),
 	clEval(NQuery,Result).
 
 % ?- cycQuery(['isa','?X','Dog'],'EverythingPSC',Result).
@@ -68,52 +69,59 @@ f(A,O) :-
 	findConstant(A,TmpO),
 	(   TmpO = [] ->
 	    clEval(['CREATE-CONSTANT',QA],O) ; O = TmpO),
-	writeln([findOrCreateConstant,O]).
+	viewIf([f,O]).
 
 %% f(A,O) :-
-%% 	write([a]),
 %% 	make_quoted_string(A,QA),
-%% 	write([QA]),
 %% 	clEval(['FIND-OR-CREATE-CONSTANT',QA],O),
-%% 	write([findOrCreateConstant,O]).
+%% 	viewIf([findOrCreateConstant,O]).
 
 findConstant(A,O) :-
 	make_quoted_string(A,QA),
-	clEval(['FIND-CONSTANT',QA],O).
+	clEval(['FIND-CONSTANT',QA],O),
+	viewIf([findConstant,O]).
 
 cap(A,O) :-
 	make_quoted_string(A,QA),
-	clEval(['CONSTANT-APROPOS',QA],O).
+	clEval(['CONSTANT-APROPOS',QA],O),
+	viewIf([cap,O]).
 
 % ?- cap('Dog',X).
 % X = ['AfricanWildDog', 'Akita-TheDog', 'AlabamaWaterdog', 'Albany-ColonieDiamondDogs-BaseballTeam', 'AllDogsGoToHeaven-TheMovie', 'AllDogsGoToHeaven2-TheMovie', 'AllDogsGoToHeavenActivityCenter-TheGame', 'AlphaDog-Movie', 'ArmandoGalarraga-BaseballPlayer'|...].
 
 apropos(A,O) :-
 	make_quoted_string(A,QA),
-	clEval(['APROPOS',QA],O).
+	clEval(['APROPOS',QA],O),
+	viewIf([apropos,O]).
 
 createOnlyIfNewConstant(A,O) :-
 	make_quoted_string(A,QA),
 	clEval(['FIND-CONSTANT',QA],O),
 	(   O = [] ->
-	    (	write('CREATING CONSTANT: '),write(A),nl,f(A,O)) ;
-	    (	write('CONSTANT ALREADY EXISTS, NOT CREATING: '),write(A),nl)).
+	    (
+	     viewIf(['CREATING CONSTANT:',A]),
+	     f(A,O)
+	    ) ;
+	    (
+	     viewIf(['CONSTANT ALREADY EXISTS, NOT CREATING:',A])
+	    )).
 
 comment(A,O) :-
-	clEval(['COMMENT',A],O).
+	clEval(['COMMENT',A],O),
+	viewIf([comment,O]).
 
 ata(A,O) :-
 	clEval(['ALL-TERM-ASSERTIONS',A],Results),
 	findall(F,(member(Result,Results),clEval(['cyc:assertion-ist-formula',Result],F)),O),
-	writeln(O).
+	viewIf([ata,O]).
 
 allIsa(A,Mt,O) :-
 	clEval(['ALL-ISA',A,Mt],O),
-	writeln(O).
+	viewIf([allIsa,O]).
 
 allInstances(A,Mt,O) :-
 	clEval(['ALL-INSTANCES',A,Mt],O),
-	writeln(O).
+	viewIf([allInstance,O]).
 
 % ?- f('AndrewDougherty',X).
 % X = 'CYC:CONSTANT'(336897, '"AndrewDougherty"').

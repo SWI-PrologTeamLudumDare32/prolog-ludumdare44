@@ -21,6 +21,8 @@
 :- use_module(nanisearch_helper).
 :- use_module(larkc_hold).
 
+:- use_module(util).
+
 :- dynamic current_hold/2.
 
 hold(X) :-
@@ -50,10 +52,10 @@ larkc_retractall_hold(X) :-
 	getMicrotheoryFromSessionID(Session,Mt),
 	findall(X,larkc_hold(X),Is),
 	member(Item,Is),
-	writeln(retract(Item)),
+	viewIf(retract(Item)),
 	Item =.. List,
 	cycUnassert(List,Mt,Result),
-	writeln([Result,larkc_retractall_hold]),
+	viewIf([Result,larkc_retractall_hold]),
 	fail.
 larkc_retractall_hold(_).
 
@@ -65,10 +67,10 @@ larkc_asserta_hold(X) :-
 	pengine_self(Session),
 	%% asserta(current_hold(Session, X)),
 	getMicrotheoryFromSessionID(Session,Mt),
-	writeln([asserta(X),mt(Mt)]),
+	viewIf([asserta(X),mt(Mt)]),
 	X =.. List,
 	cycAssert(List,Mt,Result),
-	writeln([Result,larkc_asserta_hold]).
+	viewIf([Result,larkc_asserta_hold]).
 
 /*
 :- dynamic here/1.
@@ -171,7 +173,7 @@ list_things(Place) :-
     list_things_s(Place).
 list_things(Place) :-
     hold(location(X, Place)),
-    tab(2),
+    html_tab(2),
     write_description(X),
     nl,
     fail.
@@ -179,7 +181,7 @@ list_things(_).
 
 list_connections(Place) :-
     connect(Place, X),
-    tab(2),
+    html_tab(2),
     write(X),
     nl,
     fail.
@@ -197,7 +199,7 @@ look :-
 look_in(Place) :-
     write('In '), write_description(Place), write(' are the following:'), nl,
     hold(location(X, Place)),
-    tab(2), write_description(X), fail.
+    html_tab(2), write_description(X), fail.
 look_in(_).
 
 goto(Place):-
@@ -265,7 +267,7 @@ inventory :-
     write('You have the following things:'),
     nl,
     hold(have(X)),
-    tab(3),
+    html_tab(3),
     write_description(X),
     nl,
     fail.
@@ -412,8 +414,9 @@ can_take_s(Thing) :-
 
 list_things_s(Place) :-
     location_s(object(Thing, Color, Size, Weight), Place),
-    write('A '),write(Size),tab(1),
-    write(Color),tab(1),
+    html_tab(2),
+    write('A '),write(Size),html_tab(1),
+    write(Color),html_tab(1),
     write_description(Thing),
     write(', weighing '),
     write(Weight), write(' pounds'), nl,
