@@ -9,6 +9,8 @@
  */
 :- use_module(library(pengines)).
 :- use_module(library(http/http_session)).
+:- use_module(library(hostname)).
+
 :- ensure_loaded(adventure).
 :- use_module(parser).
 :- use_module(util).
@@ -51,6 +53,7 @@ game_turn_(Request, Response) :-
 	nonvar(Response),
 	!.
 game_turn_(Request, Response) :-
+	hostname(ai),
 	atom_string(Atom,Request),
 	read_term_from_atom(Atom, Term2, [character_escapes(true)]),
 	with_output_to(atom(Got),

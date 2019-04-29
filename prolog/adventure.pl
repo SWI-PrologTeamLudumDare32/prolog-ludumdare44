@@ -20,7 +20,6 @@
 
 :- use_module(nanisearch_helper).
 :- use_module(larkc_hold).
-:- use_module(larkc_client_eval_wrappers).
 
 :- use_module(util).
 
