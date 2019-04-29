@@ -41,9 +41,20 @@ game_turn(URIRawRequest, Response) :-
 
 game_turn_(Request, Response) :-
 	string_codes(Request, Codes),
-	parse(Codes, Term),
-	with_output_to(atom(Response),
-		       adventure:Term),
+	parse(Codes, Term1),
+	with_output_to(atom(Got),
+		       (@(call(Term1),adventure) ->
+			(   Response = Got) ; 
+			(   Response = Got))),
+	nonvar(Response),
+	!.
+game_turn_(Request, Response) :-
+	atom_string(Atom,Request),
+	read_term_from_atom(Atom, Term2, [character_escapes(true)]),
+	with_output_to(atom(Got),
+		       (   call(Term2) ->
+			   (   Response = Got) ; 
+			   (   Response = Got))),
 	!.
 
 sandbox:safe_primitive(game_interact:game_turn(_, _)).

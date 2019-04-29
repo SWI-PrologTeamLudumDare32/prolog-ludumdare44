@@ -68,11 +68,11 @@ unify_cycl_formCons(A,L,[A|L]):- (var(A);var(L);A=string(_);number(A)),!.
 unify_cycl_formCons(A,L,Binding):-
 	unify_cycl_form(A,AO),
 	unify_cycl_formCons(A,AO,L,Binding).
-unify_cycl_formCons(A,AO,L,Binding):-
+unify_cycl_formCons(_A,AO,L,Binding):-
 	atom(AO),!,
 	unify_cycl_formS(L,LO),
 	Binding=..[AO|LO],!.
-unify_cycl_formCons(A,AO,L,Binding):-
+unify_cycl_formCons(_A,AO,L,Binding):-
 	unify_cycl_formS(L,LO),
 	Binding=[AO|LO],!.
 

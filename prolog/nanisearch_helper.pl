@@ -51,7 +51,7 @@ init([
      ]).
 
 
-generatePredicatesFromTypesAndInit(SessionID) :-
+generatePredicatesFromTypesAndInit(_) :-
 	init(Init),
 	member(TmpAssertion,Init),
 	(   TmpAssertion = neg(Assertion) -> true ; TmpAssertion = Assertion),	
@@ -92,7 +92,8 @@ generatePredicatesFromTypesAndInit(SessionID) :-
 		 writeln([result1a,Result1])
 		)),
 	fail.
-generatePredicatesFromTypesAndInit(_).
+generatePredicatesFromTypesAndInit(_) :-
+	retractall(predicate(_,_)).
 
 /*
 predicates([
@@ -196,7 +197,7 @@ processInit(SessionID) :-
 	getMicrotheoryFromSessionID(SessionID,Microtheory),
 	init(InitAssertions),
 	member(TmpAssertion,InitAssertions),
-	(   TmpAsserion = neg(Assertion) -> fail ; TmpAssertion = Assertion),
+	(   TmpAssertion = neg(Assertion) -> fail ; TmpAssertion = Assertion),
 	Assertion =.. List,
 	cycAssert(List,Microtheory,Result2),
 	writeln([res2,Assertion,Result2]),
@@ -216,5 +217,3 @@ loadNaniSearchIntoLarKC(SessionID) :-
 		processTypesPredicatesAndInit(SessionID),
 		writeln('done loading session')
 	    )).
-
-

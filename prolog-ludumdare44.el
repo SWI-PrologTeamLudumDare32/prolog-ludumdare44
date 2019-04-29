@@ -2,8 +2,8 @@
 
 (global-set-key "\C-cldk" 'ld44-kill)
 (global-set-key "\C-cldr" 'ld44-restart)
-(global-set-key "\C-cldRc" 'ld44-restart-client)
-(global-set-key "\C-cldRs" 'ld44-restart-server)
+(global-set-key "\C-cldc" 'ld44-restart-client)
+(global-set-key "\C-clds" 'ld44-restart-server)
 (global-set-key "\C-cldws" 'ld44-set-windows)
 
 (defun ld44-quick-start ()
@@ -43,12 +43,14 @@
  ""
  (interactive)
  (shell-command "(killall -9 start-larkc-client.sh &)")
+ (shell-command "(killall-grep-nonroot psyche_server.pl &)")
  (kmax-kill-buffer-no-ask "*LD44-REPL*"))
 
 (defun ld44-kill-server ()
  ""
  (interactive)
  (shell-command "(killall -9 start-larkc-server.sh &)")
+ (shell-command "(killall-grep-nonroot from_swipl.pl &)")
  (kmax-kill-buffer-no-ask "*LD44*"))
 
 (defun ld44-restart-client ()

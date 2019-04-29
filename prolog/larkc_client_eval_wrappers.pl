@@ -68,7 +68,7 @@ f(A,O) :-
 	findConstant(A,TmpO),
 	(   TmpO = [] ->
 	    clEval(['CREATE-CONSTANT',QA],O) ; O = TmpO),
-	write([findOrCreateConstant,O]).
+	writeln([findOrCreateConstant,O]).
 
 %% f(A,O) :-
 %% 	write([a]),
