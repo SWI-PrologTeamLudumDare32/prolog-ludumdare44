@@ -1,4 +1,4 @@
-m:- module(parser, [parse/2]).
+:- module(parser, [parse/2]).
 /** <module> Parse the user's input into a prolog term
  *
  */

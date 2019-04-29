@@ -36,7 +36,7 @@ init([
       opened(diningRoom, kitchen),
       location(desk, office),
       location(apple, kitchen),
-      location(flashlight, office),
+      location(flashlight, desk),
       location(washingMachine, cellar),
       location(nani, washingMachine),
       location(broccoli, kitchen),

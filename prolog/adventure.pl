@@ -203,9 +203,7 @@ look :-
 look_in(Place) :-
 	write('In '), write_description(Place), write(' are the following:'), nl,
 	hold(location(X, Place)),
-	html_tab(2), write_description(X), fail.
-look_in(_Place) :-
-	nl.
+	html_tab(2), write_description(X), nl, fail.
 
 goto(Place):-
 	can_go(Place),
@@ -222,7 +220,11 @@ can_go(Place):-
 	hold(here(X)),
 	connect(X,Place),
 	write('The door is shut.'), nl, fail.
-can_go(_Place):-
+can_go(Place):-
+	hold(here(Place)),
+	write('You are already in the '),write(Place),nl,fail.
+can_go(Place):-
+	not(hold(here(Place))),
 	write('You can''t get there from here.'), nl,
 	fail.
 
@@ -440,5 +442,5 @@ error_input :-
 nanifound :-
 	hold(have(nani)),        
 	write('Congratulations, you saved the Nani.'),nl,
-	write('Now you can rest secure.'),nl,nl.
+	write('Now you can rest secure.'),nl.
 nanifound.
