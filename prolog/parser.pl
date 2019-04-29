@@ -1,4 +1,4 @@
-:- module(parser, [parse/2]).
+m:- module(parser, [parse/2]).
 /** <module> Parse the user's input into a prolog term
  *
  */
@@ -32,6 +32,11 @@ porter_stem_and_adjust(W, Stem) :-
 
 substitute(offic,office).
 substitute(diningroom,diningRoom).
+substitute(washingmachin,washingMachine).
+substitute(envelop,envelope).
+substitute(cracker,crackers).
+substitute(appl,apple).
+substitute(brocoll,brocolli).
 
 adventure_input(X) -->
     ... ,
@@ -45,9 +50,12 @@ adventure_input(error_input) -->
 ... --> [].
 ... --> [_], ... .
 
+command(look_in(X)) -->
+	[look,in],
+	thing(X).
 command(look) --> [look].
 command(goto(Place)) -->
-        ( [g] |  [go] | [go, to] | [visit] | [return, to]),
+        ( [g] |  [go] | [go, to] | [goto] | [visit] | [return, to]),
         place(Place).
 command(move(Place)) -->
      place(Place).
@@ -57,31 +65,28 @@ command(take(Thing)) -->
 command(put(Thing)) -->
     (   [put] | [drop] | [leave] ),
     thing(Thing).
-command(turn_on(Device)) -->
-    [turn,on],
-    device(Device).
-
+command(turn_on(X)) -->
+    (   [turn, on]
+    |   [switch, on]
+    ),
+    device(X).
+command(turn_off(X)) -->
+    (   [turn, off]
+    |   [switch, off]
+    ),
+    device(X).
 command(inventory) -->
     [i] |
     [inv] |
     [invent] |
     [inventory].
-command(turn_on(X)) -->
-    (   [turn, on]
-    |   [switch, on]
-    ),
-    thing(X).
-command(turn_off(X)) -->
-    (   [turn, off]
-    |   [switch, off]
-    ),
-    thing(X).
-
 command(util:assert(ld44Flag(debug))) -->
 	[debug,on].
-
 command(util:retractall(ld44Flag(debug))) -->
 	[debug,off].
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	     
+
 
 place(X) -->
     [X],

@@ -9,6 +9,20 @@
 
 % larkc_hold(Mt,here(X)) and generate clEval(['ASK-TEMPLATE',[quote,'?X'],[quote,[here,'?X']],[quote,Mt]]).
 
+/*
+  cycQuery2(Prolog,Mt,Result):-
+	ISTPROLOG = ist(Mt,Prolog),
+	term_variables(Prolog,PrologVars),
+	into_cycl_form(ISTPROLOG,ISTFORM),
+	harden_cycl_vars(PrologVars+ISTFORM,CycLVars+ISTLISP),
+	ISTLISP = ['ist',HLMt,ELAsk],
+	cl_quote(Q),
+	viewIf(larkc_client:clEval(['ASK-TEMPLATE',[Q,CycLVars],[Q,ELAsk],[Q,HLMt]],ResultL)),
+	larkc_client:clEval(['ASK-TEMPLATE',[Q,CycLVars],[Q,ELAsk],[Q,HLMt]],ResultL),
+	member(Result,ResultL),
+	unify_cycl_form(PrologVars,Result).
+*/
+
 larkc_hold(Prolog):-
 	pengine_self(Session),
 	getMicrotheoryFromSessionID(Session,Mt),

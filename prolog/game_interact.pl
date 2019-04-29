@@ -45,9 +45,9 @@ game_turn_(Request, Response) :-
 	parse(Codes, Term1),
 	viewIf([term1,Term1]),
 	with_output_to(atom(Got),
-		       (@(call(Term1),adventure) ->
-			(   Response = Got) ; 
-			(   Response = Got))),
+		       (   (   @(call(Term1),adventure),adventure:nanifound) ->
+			   (   Response = Got) ; 
+			   (   Response = Got))),
 	nonvar(Response),
 	!.
 game_turn_(Request, Response) :-
@@ -60,19 +60,4 @@ game_turn_(Request, Response) :-
 	!.
 
 sandbox:safe_primitive(game_interact:game_turn(_, _)).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	
