@@ -200,10 +200,21 @@ look :-
 	write('You can go to:'), nl,
 	list_connections(Place).
 
-look_in(Place) :-
-	write('In '), write_description(Place), write(' are the following:'), nl,
-	hold(location(X, Place)),
+look_in(Thing) :-
+	mt(Mt),
+	is_contained_in(Thing,Place),
+	hold(here(Place)),
+	write('In '), write_description(Thing), write(' are the following:'), nl,
+	hold(location(X, Thing)),
 	html_tab(2), write_description(X), nl, fail.
+look_in(Thing) :-
+	mt(Mt),
+	is_contained_in(Thing,Place),
+	not(hold(here(Place))),
+	write('There is no '),
+	write_description(Thing),
+	write(' here.'), nl,
+	fail.
 
 goto(Place):-
 	can_go(Place),
