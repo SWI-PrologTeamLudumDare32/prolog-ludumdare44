@@ -201,14 +201,12 @@ look :-
 	list_connections(Place).
 
 look_in(Thing) :-
-	mt(Mt),
 	is_contained_in(Thing,Place),
 	hold(here(Place)),
 	write('In '), write_description(Thing), write(' are the following:'), nl,
 	hold(location(X, Thing)),
 	html_tab(2), write_description(X), nl, fail.
 look_in(Thing) :-
-	mt(Mt),
 	is_contained_in(Thing,Place),
 	not(hold(here(Place))),
 	write('There is no '),
@@ -301,7 +299,10 @@ can_turn_on(X) :-
 	nl, fail.
 
 turn_on_object(X) :-
-	asserta_hold(turned_on(X)).
+	asserta_hold(turned_on(X)),
+	write('You turn on '),
+	write(X),
+	nl.
 
 turn_off(X) :-
 	can_turn_off(X),
@@ -318,7 +319,10 @@ can_turn_off(X) :-
 	nl, fail.
 
 turn_off_object(X) :-
-	retractall_hold(turned_on(X)).
+	retractall_hold(turned_on(X)),
+	write('You turn off '),
+	write(X),
+	nl.
 
 open_door(Location,OtherSide) :-
 	can_open_door(Location,OtherSide),
