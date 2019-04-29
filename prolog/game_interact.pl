@@ -11,6 +11,7 @@
 :- use_module(library(http/http_session)).
 :- ensure_loaded(adventure).
 :- use_module(parser).
+:- use_module(util).
 
 :- dynamic current_process/4, current_location/3.
 
@@ -36,12 +37,13 @@ kill_game(PengineID) :-
 
 game_turn(URIRawRequest, Response) :-
 	www_form_encode(RawRequest, URIRawRequest),
-	print_term(rawRequest(RawRequest),[]),
+	viewIf(rawRequest(RawRequest)),
 	game_turn_(RawRequest, Response).
 
 game_turn_(Request, Response) :-
 	string_codes(Request, Codes),
 	parse(Codes, Term1),
+	viewIf([term1,Term1]),
 	with_output_to(atom(Got),
 		       (@(call(Term1),adventure) ->
 			(   Response = Got) ; 

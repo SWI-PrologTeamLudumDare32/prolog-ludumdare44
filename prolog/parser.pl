@@ -31,6 +31,7 @@ porter_stem_and_adjust(W, Stem) :-
 	(   substitute(TmpStem,Stem) -> true ; Stem = TmpStem).
 
 substitute(offic,office).
+substitute(diningroom,diningRoom).
 
 adventure_input(X) -->
     ... ,
